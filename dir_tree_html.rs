@@ -12,29 +12,29 @@ fn string_slice(value: &str, from: i64, to: i64) -> Rc<str> {
 }
 #[derive(Clone)]
 enum UH0 {
-    UH0_0,
-    UH0_1(i32, Rc<str>, Rc<UH0>),
+    UH0_ChildEnd,
+    UH0_Child(i32, Rc<str>, Rc<UH0>),
 }
 impl UH0 {
     fn tag(&self) -> i32 {
         match self {
-            UH0::UH0_0 => 0,
-            UH0::UH0_1(..) => 1,
+            UH0::UH0_ChildEnd => 0,
+            UH0::UH0_Child(..) => 1,
         }
     }
 }
 #[derive(Clone)]
 enum UH1 {
-    UH1_0,
-    UH1_1(Rc<str>, Rc<str>, i64, Rc<UH1>),
-    UH1_2(Rc<str>, Rc<str>, Rc<UH1>, Rc<UH1>),
+    UH1_End,
+    UH1_File(Rc<str>, Rc<str>, i64, Rc<UH1>),
+    UH1_Folder(Rc<str>, Rc<str>, Rc<UH1>, Rc<UH1>),
 }
 impl UH1 {
     fn tag(&self) -> i32 {
         match self {
-            UH1::UH1_0 => 0,
-            UH1::UH1_1(..) => 1,
-            UH1::UH1_2(..) => 2,
+            UH1::UH1_End => 0,
+            UH1::UH1_File(..) => 1,
+            UH1::UH1_Folder(..) => 2,
         }
     }
 }
@@ -359,7 +359,7 @@ fn parse_4(mut v0: Rc<str>, mut v1: i32) -> Rc<UH0> {
     let mut v2: i32 = (v0.clone().len() as i32);
     let mut v3: bool = v1 == v2;
     if v3 {
-        { thread_local!{ static CASE: Rc<UH0> = Rc::new(UH0::UH0_0); } CASE.with(|case| case.clone()) }
+        { thread_local!{ static CASE: Rc<UH0> = Rc::new(UH0::UH0_ChildEnd); } CASE.with(|case| case.clone()) }
     } else {
         let mut v5: i32 = v1.wrapping_add(2i32);
         let mut v6: i32 = find_nl_5(v0.clone(), v5);
@@ -377,7 +377,7 @@ fn parse_4(mut v0: Rc<str>, mut v1: i32) -> Rc<UH0> {
             0i32
         };
         let mut v16: Rc<UH0> = parse_4(v0.clone(), v10);
-        Rc::new(UH0::UH0_1(v15, v12.clone(), v16.clone()))
+        Rc::new(UH0::UH0_Child(v15, v12.clone(), v16.clone()))
     }
 }
 fn cmp_at_9(mut v0: Rc<str>, mut v1: Rc<str>, mut v2: i32) -> i32 {
@@ -423,7 +423,7 @@ fn cmp_at_9(mut v0: Rc<str>, mut v1: Rc<str>, mut v2: i32) -> i32 {
 }
 fn insert_8(mut v0: i32, mut v1: Rc<str>, mut v2: Rc<UH0>) -> Rc<UH0> {
     match &*v2 {
-        UH0::UH0_1(v5, v6, v7) => {
+        UH0::UH0_Child(v5, v6, v7) => {
             let mut v5: i32 = *v5;
             let mut v6: Rc<str> = v6.clone();
             let mut v7: Rc<UH0> = v7.clone();
@@ -438,35 +438,35 @@ fn insert_8(mut v0: i32, mut v1: Rc<str>, mut v2: Rc<UH0>) -> Rc<UH0> {
                 v12
             };
             if v13 {
-                Rc::new(UH0::UH0_1(v0, v1.clone(), v2.clone()))
+                Rc::new(UH0::UH0_Child(v0, v1.clone(), v2.clone()))
             } else {
                 let mut v15: Rc<UH0> = insert_8(v0, v1.clone(), v7.clone());
-                Rc::new(UH0::UH0_1(v5, v6.clone(), v15.clone()))
+                Rc::new(UH0::UH0_Child(v5, v6.clone(), v15.clone()))
             }
         }
-        UH0::UH0_0 => {
-            let mut v3: Rc<UH0> = { thread_local!{ static CASE: Rc<UH0> = Rc::new(UH0::UH0_0); } CASE.with(|case| case.clone()) };
-            Rc::new(UH0::UH0_1(v0, v1.clone(), v3.clone()))
+        UH0::UH0_ChildEnd => {
+            let mut v3: Rc<UH0> = { thread_local!{ static CASE: Rc<UH0> = Rc::new(UH0::UH0_ChildEnd); } CASE.with(|case| case.clone()) };
+            Rc::new(UH0::UH0_Child(v0, v1.clone(), v3.clone()))
         }
     }
 }
 fn sort_7(mut v0: Rc<UH0>) -> Rc<UH0> {
     match &*v0 {
-        UH0::UH0_1(v2, v3, v4) => {
+        UH0::UH0_Child(v2, v3, v4) => {
             let mut v2: i32 = *v2;
             let mut v3: Rc<str> = v3.clone();
             let mut v4: Rc<UH0> = v4.clone();
             let mut v5: Rc<UH0> = sort_7(v4.clone());
             insert_8(v2, v3.clone(), v5.clone())
         }
-        UH0::UH0_0 => {
-            { thread_local!{ static CASE: Rc<UH0> = Rc::new(UH0::UH0_0); } CASE.with(|case| case.clone()) }
+        UH0::UH0_ChildEnd => {
+            { thread_local!{ static CASE: Rc<UH0> = Rc::new(UH0::UH0_ChildEnd); } CASE.with(|case| case.clone()) }
         }
     }
 }
 fn chain_10(mut v0: Rc<str>, mut v1: Rc<str>, mut v2: Rc<UH0>) -> Rc<UH1> {
     match &*v2 {
-        UH0::UH0_1(v4, v5, v6) => {
+        UH0::UH0_Child(v4, v5, v6) => {
             let mut v4: i32 = *v4;
             let mut v5: Rc<str> = v5.clone();
             let mut v6: Rc<UH0> = v6.clone();
@@ -488,24 +488,24 @@ fn chain_10(mut v0: Rc<str>, mut v1: Rc<str>, mut v2: Rc<UH0>) -> Rc<UH1> {
                 let mut v19: Rc<UH0> = parse_4(v17.clone(), v18);
                 let mut v20: Rc<UH0> = sort_7(v19.clone());
                 let mut v21: Rc<UH1> = chain_10(v10.clone(), v15.clone(), v20.clone());
-                Rc::new(UH1::UH1_2(v5.clone(), v15.clone(), v21.clone(), v7.clone()))
+                Rc::new(UH1::UH1_Folder(v5.clone(), v15.clone(), v21.clone(), v7.clone()))
             } else {
                 let mut v24: Rc<str> = Rc::<str>::from(std::path::Path::new(v0.as_ref()).join(v5.as_ref()).display().to_string());
                 let mut v26: i64 = std::fs::metadata(v24.as_ref()).map(|meta| meta.len() as i64).unwrap_or(0);
-                Rc::new(UH1::UH1_1(v5.clone(), v1.clone(), v26, v7.clone()))
+                Rc::new(UH1::UH1_File(v5.clone(), v1.clone(), v26, v7.clone()))
             }
         }
-        UH0::UH0_0 => {
-            { thread_local!{ static CASE: Rc<UH1> = Rc::new(UH1::UH1_0); } CASE.with(|case| case.clone()) }
+        UH0::UH0_ChildEnd => {
+            { thread_local!{ static CASE: Rc<UH1> = Rc::new(UH1::UH1_End); } CASE.with(|case| case.clone()) }
         }
     }
 }
 fn folder_bytes_12(mut v0: Rc<UH1>) -> i64 {
     match &*v0 {
-        UH1::UH1_0 => {
+        UH1::UH1_End => {
             0i64
         }
-        UH1::UH1_1(v1, v2, v3, v4) => {
+        UH1::UH1_File(v1, v2, v3, v4) => {
             let mut v1: Rc<str> = v1.clone();
             let mut v2: Rc<str> = v2.clone();
             let mut v3: i64 = *v3;
@@ -514,7 +514,7 @@ fn folder_bytes_12(mut v0: Rc<UH1>) -> i64 {
             let mut v6: i64 = v3.wrapping_add(v5);
             v6
         }
-        UH1::UH1_2(v7, v8, v9, v10) => {
+        UH1::UH1_Folder(v7, v8, v9, v10) => {
             let mut v7: Rc<str> = v7.clone();
             let mut v8: Rc<str> = v8.clone();
             let mut v9: Rc<UH1> = v9.clone();
@@ -528,11 +528,11 @@ fn folder_bytes_12(mut v0: Rc<UH1>) -> i64 {
 }
 fn html_chain_11(mut v0: Rc<UH1>) -> Rc<str> {
     match &*v0 {
-        UH1::UH1_0 => {
+        UH1::UH1_End => {
             let mut v1: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
             v1.clone()
         }
-        UH1::UH1_1(v2, v3, v4, v5) => {
+        UH1::UH1_File(v2, v3, v4, v5) => {
             let mut v2: Rc<str> = v2.clone();
             let mut v3: Rc<str> = v3.clone();
             let mut v4: i64 = *v4;
@@ -619,7 +619,7 @@ fn html_chain_11(mut v0: Rc<UH1>) -> Rc<str> {
             let mut v62: Rc<str> = Rc::<str>::from(format!("{}{}", v60.clone(), v61.clone()));
             v62.clone()
         }
-        UH1::UH1_2(v63, v64, v65, v66) => {
+        UH1::UH1_Folder(v63, v64, v65, v66) => {
             let mut v63: Rc<str> = v63.clone();
             let mut v64: Rc<str> = v64.clone();
             let mut v65: Rc<UH1> = v65.clone();
