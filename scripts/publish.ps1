@@ -5,4 +5,4 @@ Set-Location $ScriptDir
 $ErrorActionPreference = "Stop"
 . ../deps/spiral/scripts/core.ps1
 
-{ & "../dist/dir-tree-html$(_exe)" --dir ../dist --html ../dist/index.html } | Invoke-Block
+{ pwsh ../deps/spiral/scripts/publish-tree.ps1 -Root .. -Tool "../dist/dir-tree-html$(_exe)" } | Invoke-Block
