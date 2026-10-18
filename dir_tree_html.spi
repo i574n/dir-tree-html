@@ -169,8 +169,40 @@ let rec html_chain (item : entry) : string =
         inl q = "\""
         "<details open=" ++ q ++ "true" ++ q ++ "><summary>" ++ anchor "&#128194;" rel name (bytes children) ++ "</summary><div>" ++ html_chain children ++ "</div></details>" ++ html_chain next
 
-inl doc_head () : string = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <style>\nbody {\n    background-color: #222;\n    color: #ccc;\n}\na {\n  color: #777;\n  font-size: 15px;\n}\nspan {\n  font-size: 11px;\n}\ndiv > div {\n  padding-left: 10px;\n}\ndetails > div {\n  padding-left: 19px;\n}\n  </style>\n</head>\n<body>\n  <div>"
-inl doc_tail () : string = "</div>\n</body>\n</html>\n"
+inl doc_head () : string = """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <style>
+    body {
+        background-color: #222;
+        color: #ccc;
+    }
+    a {
+      color: #777;
+      font-size: 15px;
+    }
+    span {
+      font-size: 11px;
+    }
+    div > div {
+      padding-left: 10px;
+    }
+    details > div {
+      padding-left: 19px;
+    }
+      </style>
+    </head>
+    <body>
+      <div>
+    """
+inl doc_tail () : string = """
+    </div>
+    </body>
+    </html>
+
+    """
 
 instance render entry = fun item => html_chain item
 instance render root = fun (root items) => render items
