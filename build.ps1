@@ -11,7 +11,8 @@ if (!(BuildSpiral dir_tree_html.spi dir_tree_html.rs "dir-tree-html")) {
     throw "RUST-FAILED dir-tree-html / compile"
 }
 { cargo +nightly-2025-11-01 build --release } | Invoke-Block
-$cargoTarget = (cargo metadata --format-version 1 --no-deps | ConvertFrom-Json).target_directory
+$cargoTarget = (cargo +nightly-2025-11-01 metadata --format-version 1 --no-deps | ConvertFrom-Json).target_directory
+if (!$cargoTarget) { throw "RUST-FAILED dir-tree-html / cargo metadata found no target directory" }
 
 Remove-Item dist -Recurse -Force -ErrorAction Ignore
 New-Item -ItemType Directory -Force -Path dist | Out-Null
