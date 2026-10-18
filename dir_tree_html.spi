@@ -25,7 +25,7 @@ inl host_arg (i : i32) : string =
     !\\(i, $'"Rc::<str>::from(std::env::args().nth($0 as usize).unwrap_or_default())"')
 
 inl host_listing (path : string) : string =
-    !\\(path, $'"{ let mut out = String::new(); if let Ok(read) = std::fs::read_dir($0.as_ref()) { for entry in read.flatten() { let child = entry.path(); let Some(name) = child.file_name() else { continue }; let name = name.to_string_lossy(); if child.is_dir() { out.push(char::from(49)); } else if child.is_file() { out.push(char::from(48)); } else { continue }; out.push(char::from(32)); out.push_str(&name.len().to_string()); out.push(char::from(10)); out.push_str(&name); } } Rc::<str>::from(out) }"')
+    !\\(path, $'"{ let mut out = String::new(); if let Ok(read) = std::fs::read_dir($0.as_ref()) { for entry in read.flatten() { let Ok(kind) = entry.file_type() else { continue }; if kind.is_symlink() { continue }; let child = entry.path(); let Some(name) = child.file_name() else { continue }; let name = name.to_string_lossy(); if child.is_dir() { out.push(char::from(49)); } else if child.is_file() { out.push(char::from(48)); } else { continue }; out.push(char::from(32)); out.push_str(&name.len().to_string()); out.push(char::from(10)); out.push_str(&name); } } Rc::<str>::from(out) }"')
 
 inl host_file_len (path : string) : i64 =
     !\\(path, $'"std::fs::metadata($0.as_ref()).map(|meta| meta.len() as i64).unwrap_or(0)"')
@@ -174,10 +174,18 @@ inl doc_head () : string = """
     <html lang="en">
     <head>
       <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
       <style>
+    html {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
     body {
         background-color: #222;
         color: #ccc;
+        margin: 8px;
+        line-height: 1.6;
+        overflow-wrap: anywhere;
     }
     a {
       color: #777;
@@ -191,6 +199,20 @@ inl doc_head () : string = """
     }
     details > div {
       padding-left: 19px;
+    }
+    @media (max-width: 600px) {
+      a {
+        font-size: 16px;
+      }
+      span {
+        font-size: 12px;
+      }
+      div > div {
+        padding-left: 4px;
+      }
+      details > div {
+        padding-left: 10px;
+      }
     }
       </style>
     </head>
