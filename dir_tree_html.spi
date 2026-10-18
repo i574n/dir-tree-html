@@ -239,7 +239,7 @@ inl doc_head () : string = """
     <body>
       <div>
     """
-inl doc_close (readme : string) : string = "</div>`n" ++ readme ++ "</body>`n</html>`n`n"
+inl doc_close (readme : string) : string = "</div>\n" ++ readme ++ "</body>\n</html>\n"
 
 let rec escape_from (text : string) (i : i32) (acc : string) : string =
     if i =. (sm.length text : i32) then acc
@@ -480,6 +480,7 @@ inl self_test () : i32 =
     inl total_ok = if (bytes tree) =. 10i64 then 0i32 else 3i32
     inl order_ok = same (page (read_tree (order_fixture ())) "") (doc_head () ++ order_body () ++ doc_close "") "dir-tree-html-order-got.html"
     inl readme_ok = same (readme_html (readme_fixture ())) (readme_body ()) "dir-tree-html-readme-got.html"
+    inl close_ok = same (doc_close "<p>r</p>\n") "</div>\n<p>r</p>\n</body>\n</html>\n" "dir-tree-html-close-got.html"
     inl labels_ok =
         if (size_label 1024i64) =. "1024.00 B" then
             if (size_label 1025i64) =. "1.00 KB" then
@@ -490,7 +491,7 @@ inl self_test () : i32 =
         else 1i32
     if page_ok =. 0i32 then
         if total_ok =. 0i32 then
-            if order_ok =. 0i32 then (if readme_ok =. 0i32 then labels_ok else 4i32) else order_ok
+            if order_ok =. 0i32 then (if readme_ok =. 0i32 then (if close_ok =. 0i32 then labels_ok else 5i32) else 4i32) else order_ok
         else total_ok
     else page_ok
 
