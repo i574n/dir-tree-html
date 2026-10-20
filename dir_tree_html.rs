@@ -719,48 +719,123 @@ fn starts_at_14(mut v0: Rc<str>, mut v1: Rc<str>, mut v2: i32) -> bool {
         }
     }
 }
-fn escape_from_15(mut v0: Rc<str>, mut v1: i32, mut v2: Rc<str>) -> Rc<str> {
+fn escape_from_16(mut v0: Rc<str>, mut v1: i32, mut v2: Rc<str>) -> Rc<str> {
     loop {
         let mut v3: i32 = (v0.clone().len() as i32);
         let mut v4: bool = v1 == v3;
         if v4 {
-            return v2.clone();
+            let mut v5: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) }));
+            return v5.clone();
         } else {
-            let mut v5: u8 = v0.clone().as_bytes()[v1 as usize];
-            let mut v6: bool = v5 == b'&';
-            let mut v18: Rc<str> = if v6 {
-                let mut v7: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("&amp;"); } LIT.with(|lit| lit.clone()) };
-                v7.clone()
+            let mut v6: u8 = v0.clone().as_bytes()[v1 as usize];
+            let mut v7: bool = v6 == b'&';
+            let mut v19: Rc<str> = if v7 {
+                let mut v8: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("&amp;"); } LIT.with(|lit| lit.clone()) };
+                v8.clone()
             } else {
-                let mut v8: bool = v5 == b'<';
-                if v8 {
-                    let mut v9: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("&lt;"); } LIT.with(|lit| lit.clone()) };
-                    v9.clone()
+                let mut v9: bool = v6 == b'<';
+                if v9 {
+                    let mut v10: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("&lt;"); } LIT.with(|lit| lit.clone()) };
+                    v10.clone()
                 } else {
-                    let mut v10: bool = v5 == b'>';
-                    if v10 {
-                        let mut v11: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("&gt;"); } LIT.with(|lit| lit.clone()) };
-                        v11.clone()
+                    let mut v11: bool = v6 == b'>';
+                    if v11 {
+                        let mut v12: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("&gt;"); } LIT.with(|lit| lit.clone()) };
+                        v12.clone()
                     } else {
-                        let mut v12: bool = v5 == b'"';
-                        if v12 {
-                            let mut v13: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("&quot;"); } LIT.with(|lit| lit.clone()) };
-                            v13.clone()
-                        } else {
-                            let mut v14: Rc<str> = string_slice(&v0.clone(), v1 as i64, v1 as i64);
+                        let mut v13: bool = v6 == b'"';
+                        if v13 {
+                            let mut v14: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("&quot;"); } LIT.with(|lit| lit.clone()) };
                             v14.clone()
+                        } else {
+                            let mut v15: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                            v15.clone()
                         }
                     }
                 }
             };
-            let mut v19: i32 = v1.wrapping_add(1i32);
-            let mut v20: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), v18.clone()));
-            (v0, v1, v2) = (v0.clone(), v19, v20.clone());
-            continue;
+            let mut v20: bool = v19.clone() == { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+            if v20 {
+                let mut v21: i32 = v1.wrapping_add(1i32);
+                return escape_from_15(v0.clone(), v21, v1, v2.clone());
+            } else {
+                let mut v23: i32 = v1.wrapping_add(1i32);
+                let mut v24: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) }));
+                let mut v25: Rc<str> = Rc::<str>::from(format!("{}{}", v24.clone(), v19.clone()));
+                (v0, v1, v2) = (v0.clone(), v23, v25.clone());
+                continue;
+            }
         }
     }
 }
-fn count_hashes_16(mut v0: Rc<str>, mut v1: i32) -> i32 {
+fn escape_from_15(mut v0: Rc<str>, mut v1: i32, mut v2: i32, mut v3: Rc<str>) -> Rc<str> {
+    loop {
+        let mut v4: i32 = (v0.clone().len() as i32);
+        let mut v5: bool = v1 == v4;
+        if v5 {
+            let mut v6: bool = v2 == v1;
+            let mut v10: Rc<str> = if v6 {
+                let mut v7: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                v7.clone()
+            } else {
+                let mut v8: i32 = v1.wrapping_sub(1i32);
+                let mut v9: Rc<str> = string_slice(&v0.clone(), v2 as i64, v8 as i64);
+                v9.clone()
+            };
+            let mut v11: Rc<str> = Rc::<str>::from(format!("{}{}", v3.clone(), v10.clone()));
+            return v11.clone();
+        } else {
+            let mut v12: u8 = v0.clone().as_bytes()[v1 as usize];
+            let mut v13: bool = v12 == b'&';
+            let mut v25: Rc<str> = if v13 {
+                let mut v14: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("&amp;"); } LIT.with(|lit| lit.clone()) };
+                v14.clone()
+            } else {
+                let mut v15: bool = v12 == b'<';
+                if v15 {
+                    let mut v16: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("&lt;"); } LIT.with(|lit| lit.clone()) };
+                    v16.clone()
+                } else {
+                    let mut v17: bool = v12 == b'>';
+                    if v17 {
+                        let mut v18: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("&gt;"); } LIT.with(|lit| lit.clone()) };
+                        v18.clone()
+                    } else {
+                        let mut v19: bool = v12 == b'"';
+                        if v19 {
+                            let mut v20: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("&quot;"); } LIT.with(|lit| lit.clone()) };
+                            v20.clone()
+                        } else {
+                            let mut v21: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                            v21.clone()
+                        }
+                    }
+                }
+            };
+            let mut v26: bool = v25.clone() == { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+            if v26 {
+                let mut v27: i32 = v1.wrapping_add(1i32);
+                (v0, v1, v2, v3) = (v0.clone(), v27, v2, v3.clone());
+                continue;
+            } else {
+                let mut v29: i32 = v1.wrapping_add(1i32);
+                let mut v30: bool = v2 == v1;
+                let mut v34: Rc<str> = if v30 {
+                    let mut v31: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                    v31.clone()
+                } else {
+                    let mut v32: i32 = v1.wrapping_sub(1i32);
+                    let mut v33: Rc<str> = string_slice(&v0.clone(), v2 as i64, v32 as i64);
+                    v33.clone()
+                };
+                let mut v35: Rc<str> = Rc::<str>::from(format!("{}{}", v3.clone(), v34.clone()));
+                let mut v36: Rc<str> = Rc::<str>::from(format!("{}{}", v35.clone(), v25.clone()));
+                return escape_from_16(v0.clone(), v29, v36.clone());
+            }
+        }
+    }
+}
+fn count_hashes_17(mut v0: Rc<str>, mut v1: i32) -> i32 {
     loop {
         let mut v2: i32 = (v0.clone().len() as i32);
         let mut v3: bool = v1 == v2;
@@ -779,7 +854,7 @@ fn count_hashes_16(mut v0: Rc<str>, mut v1: i32) -> i32 {
         }
     }
 }
-fn blank_from_17(mut v0: Rc<str>, mut v1: i32) -> bool {
+fn blank_from_18(mut v0: Rc<str>, mut v1: i32) -> bool {
     loop {
         let mut v2: i32 = (v0.clone().len() as i32);
         let mut v3: bool = v1 == v2;
@@ -798,7 +873,7 @@ fn blank_from_17(mut v0: Rc<str>, mut v1: i32) -> bool {
         }
     }
 }
-fn find_char_from_19(mut v0: Rc<str>, mut v1: u8, mut v2: i32) -> i32 {
+fn find_char_from_20(mut v0: Rc<str>, mut v1: u8, mut v2: i32) -> i32 {
     loop {
         let mut v3: i32 = (v0.clone().len() as i32);
         let mut v4: bool = v2 == v3;
@@ -817,7 +892,174 @@ fn find_char_from_19(mut v0: Rc<str>, mut v1: u8, mut v2: i32) -> i32 {
         }
     }
 }
-fn inline_from_18(mut v0: Rc<str>, mut v1: i32, mut v2: Rc<str>) -> Rc<str> {
+fn next_inline_marker_from_21(mut v0: Rc<str>, mut v1: i32) -> i32 {
+    loop {
+        let mut v2: i32 = (v0.clone().len() as i32);
+        let mut v3: bool = v1 == v2;
+        if v3 {
+            return v1;
+        } else {
+            let mut v4: u8 = v0.clone().as_bytes()[v1 as usize];
+            let mut v5: bool = v4 == b'`';
+            if v5 {
+                return v1;
+            } else {
+                let mut v6: bool = v4 == b'[';
+                if v6 {
+                    return v1;
+                } else {
+                    let mut v7: bool = v4 == b'!';
+                    if v7 {
+                        return v1;
+                    } else {
+                        let mut v8: bool = v4 == b'*';
+                        if v8 {
+                            return v1;
+                        } else {
+                            let mut v9: bool = v4 == b'<';
+                            if v9 {
+                                return v1;
+                            } else {
+                                let mut v10: bool = v4 == b'\\';
+                                if v10 {
+                                    return v1;
+                                } else {
+                                    let mut v11: i32 = v1.wrapping_add(1i32);
+                                    (v0, v1) = (v0.clone(), v11);
+                                    continue;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+fn double_close_22(mut v0: Rc<str>, mut v1: i32) -> i32 {
+    loop {
+        let mut v2: i32 = (v0.clone().len() as i32);
+        let mut v3: bool = v1 == v2;
+        if v3 {
+            return -1i32;
+        } else {
+            let mut v4: i32 = v1.wrapping_add(1i32);
+            let mut v5: bool = v4 == v2;
+            if v5 {
+                return -1i32;
+            } else {
+                let mut v6: u8 = v0.clone().as_bytes()[v1 as usize];
+                let mut v7: bool = v6 == b'*';
+                if v7 {
+                    let mut v8: u8 = v0.clone().as_bytes()[v4 as usize];
+                    let mut v9: bool = v8 == b'*';
+                    if v9 {
+                        return v1;
+                    } else {
+                        (v0, v1) = (v0.clone(), v4);
+                        continue;
+                    }
+                } else {
+                    (v0, v1) = (v0.clone(), v4);
+                    continue;
+                }
+            }
+        }
+    }
+}
+fn image_close_23(mut v0: Rc<str>, mut v1: i32) -> i32 {
+    let mut v2: i32 = (v0.clone().len() as i32);
+    let mut v3: u8 = v0.clone().as_bytes()[v1 as usize];
+    let mut v4: bool = v3 == b'!';
+    if v4 {
+        let mut v5: i32 = v1.wrapping_add(1i32);
+        let mut v6: bool = v5 == v2;
+        if v6 {
+            -1i32
+        } else {
+            let mut v7: u8 = v0.clone().as_bytes()[v5 as usize];
+            let mut v8: bool = v7 == b'[';
+            if v8 {
+                let mut v9: u8 = b']';
+                let mut v10: i32 = v1.wrapping_add(2i32);
+                let mut v11: i32 = find_char_from_20(v0.clone(), v9, v10);
+                let mut v12: bool = v11 == -1i32;
+                if v12 {
+                    -1i32
+                } else {
+                    let mut v13: i32 = v11.wrapping_add(1i32);
+                    let mut v14: bool = v13 == v2;
+                    if v14 {
+                        -1i32
+                    } else {
+                        let mut v15: u8 = v0.clone().as_bytes()[v13 as usize];
+                        let mut v16: bool = v15 == b'(';
+                        if v16 {
+                            let mut v17: u8 = b')';
+                            let mut v18: i32 = v11.wrapping_add(2i32);
+                            find_char_from_20(v0.clone(), v17, v18)
+                        } else {
+                            -1i32
+                        }
+                    }
+                }
+            } else {
+                -1i32
+            }
+        }
+    } else {
+        -1i32
+    }
+}
+fn badge_close_24(mut v0: Rc<str>, mut v1: i32) -> i32 {
+    let mut v2: i32 = (v0.clone().len() as i32);
+    let mut v3: u8 = v0.clone().as_bytes()[v1 as usize];
+    let mut v4: bool = v3 == b'[';
+    if v4 {
+        let mut v5: i32 = v1.wrapping_add(1i32);
+        let mut v6: bool = v5 == v2;
+        if v6 {
+            -1i32
+        } else {
+            let mut v7: i32 = image_close_23(v0.clone(), v5);
+            let mut v8: bool = v7 == -1i32;
+            if v8 {
+                -1i32
+            } else {
+                let mut v9: i32 = v7.wrapping_add(1i32);
+                let mut v10: bool = v9 == v2;
+                if v10 {
+                    -1i32
+                } else {
+                    let mut v11: u8 = v0.clone().as_bytes()[v9 as usize];
+                    let mut v12: bool = v11 == b']';
+                    if v12 {
+                        let mut v13: i32 = v7.wrapping_add(2i32);
+                        let mut v14: bool = v13 == v2;
+                        if v14 {
+                            -1i32
+                        } else {
+                            let mut v15: u8 = v0.clone().as_bytes()[v13 as usize];
+                            let mut v16: bool = v15 == b'(';
+                            if v16 {
+                                let mut v17: u8 = b')';
+                                let mut v18: i32 = v7.wrapping_add(3i32);
+                                find_char_from_20(v0.clone(), v17, v18)
+                            } else {
+                                -1i32
+                            }
+                        }
+                    } else {
+                        -1i32
+                    }
+                }
+            }
+        }
+    } else {
+        -1i32
+    }
+}
+fn inline_from_19(mut v0: Rc<str>, mut v1: i32, mut v2: Rc<str>) -> Rc<str> {
     loop {
         let mut v3: i32 = (v0.clone().len() as i32);
         let mut v4: bool = v1 == v3;
@@ -828,113 +1070,624 @@ fn inline_from_18(mut v0: Rc<str>, mut v1: i32, mut v2: Rc<str>) -> Rc<str> {
             let mut v6: bool = v5 == b'`';
             if v6 {
                 let mut v7: i32 = v1.wrapping_add(1i32);
-                let mut v8: i32 = find_char_from_19(v0.clone(), v5, v7);
+                let mut v8: i32 = find_char_from_20(v0.clone(), v5, v7);
                 let mut v9: bool = v8 == -1i32;
                 if v9 {
-                    let mut v10: Rc<str> = string_slice(&v0.clone(), v1 as i64, v1 as i64);
-                    let mut v11: i32 = 0i32;
-                    let mut v12: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
-                    let mut v13: Rc<str> = escape_from_15(v10.clone(), v11, v12.clone());
-                    let mut v14: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), v13.clone()));
-                    (v0, v1, v2) = (v0.clone(), v7, v14.clone());
+                    let mut v10: i32 = next_inline_marker_from_21(v0.clone(), v7);
+                    let mut v11: bool = v1 == v10;
+                    let mut v15: Rc<str> = if v11 {
+                        let mut v12: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                        v12.clone()
+                    } else {
+                        let mut v13: i32 = v10.wrapping_sub(1i32);
+                        let mut v14: Rc<str> = string_slice(&v0.clone(), v1 as i64, v13 as i64);
+                        v14.clone()
+                    };
+                    let mut v16: i32 = 0i32;
+                    let mut v17: i32 = 0i32;
+                    let mut v18: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                    let mut v19: Rc<str> = escape_from_15(v15.clone(), v16, v17, v18.clone());
+                    let mut v20: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), v19.clone()));
+                    (v0, v1, v2) = (v0.clone(), v10, v20.clone());
                     continue;
                 } else {
-                    let mut v16: i32 = v8.wrapping_add(1i32);
-                    let mut v17: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("<code>"); } LIT.with(|lit| lit.clone()) }));
-                    let mut v18: i32 = v8.wrapping_sub(1i32);
-                    let mut v19: Rc<str> = string_slice(&v0.clone(), v7 as i64, v18 as i64);
-                    let mut v20: i32 = 0i32;
-                    let mut v21: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
-                    let mut v22: Rc<str> = escape_from_15(v19.clone(), v20, v21.clone());
-                    let mut v23: Rc<str> = Rc::<str>::from(format!("{}{}", v17.clone(), v22.clone()));
-                    let mut v24: Rc<str> = Rc::<str>::from(format!("{}{}", v23.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</code>"); } LIT.with(|lit| lit.clone()) }));
-                    (v0, v1, v2) = (v0.clone(), v16, v24.clone());
+                    let mut v22: i32 = v8.wrapping_add(1i32);
+                    let mut v23: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("<code>"); } LIT.with(|lit| lit.clone()) }));
+                    let mut v24: i32 = v8.wrapping_sub(1i32);
+                    let mut v25: Rc<str> = string_slice(&v0.clone(), v7 as i64, v24 as i64);
+                    let mut v26: i32 = 0i32;
+                    let mut v27: i32 = 0i32;
+                    let mut v28: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                    let mut v29: Rc<str> = escape_from_15(v25.clone(), v26, v27, v28.clone());
+                    let mut v30: Rc<str> = Rc::<str>::from(format!("{}{}", v23.clone(), v29.clone()));
+                    let mut v31: Rc<str> = Rc::<str>::from(format!("{}{}", v30.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</code>"); } LIT.with(|lit| lit.clone()) }));
+                    (v0, v1, v2) = (v0.clone(), v22, v31.clone());
                     continue;
                 }
             } else {
-                let mut v27: bool = v5 == b'[';
-                if v27 {
-                    let mut v28: u8 = b']';
-                    let mut v29: i32 = v1.wrapping_add(1i32);
-                    let mut v30: i32 = find_char_from_19(v0.clone(), v28, v29);
-                    let mut v31: bool = v30 == -1i32;
-                    if v31 {
-                        let mut v32: Rc<str> = string_slice(&v0.clone(), v1 as i64, v1 as i64);
-                        let mut v33: i32 = 0i32;
-                        let mut v34: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
-                        let mut v35: Rc<str> = escape_from_15(v32.clone(), v33, v34.clone());
-                        let mut v36: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), v35.clone()));
-                        (v0, v1, v2) = (v0.clone(), v29, v36.clone());
+                let mut v34: bool = v5 == b'\\';
+                if v34 {
+                    let mut v35: i32 = v1.wrapping_add(1i32);
+                    let mut v36: bool = v35 == v3;
+                    if v36 {
+                        let mut v37: i32 = next_inline_marker_from_21(v0.clone(), v35);
+                        let mut v38: bool = v1 == v37;
+                        let mut v42: Rc<str> = if v38 {
+                            let mut v39: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                            v39.clone()
+                        } else {
+                            let mut v40: i32 = v37.wrapping_sub(1i32);
+                            let mut v41: Rc<str> = string_slice(&v0.clone(), v1 as i64, v40 as i64);
+                            v41.clone()
+                        };
+                        let mut v43: i32 = 0i32;
+                        let mut v44: i32 = 0i32;
+                        let mut v45: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                        let mut v46: Rc<str> = escape_from_15(v42.clone(), v43, v44, v45.clone());
+                        let mut v47: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), v46.clone()));
+                        (v0, v1, v2) = (v0.clone(), v37, v47.clone());
                         continue;
                     } else {
-                        let mut v38: i32 = v30.wrapping_add(1i32);
-                        let mut v39: bool = v38 == v3;
-                        if v39 {
-                            let mut v40: Rc<str> = string_slice(&v0.clone(), v1 as i64, v1 as i64);
-                            let mut v41: i32 = 0i32;
-                            let mut v42: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
-                            let mut v43: Rc<str> = escape_from_15(v40.clone(), v41, v42.clone());
-                            let mut v44: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), v43.clone()));
-                            (v0, v1, v2) = (v0.clone(), v29, v44.clone());
+                        let mut v49: u8 = v0.clone().as_bytes()[v35 as usize];
+                        let mut v50: bool = v49 == b'*';
+                        let mut v68: bool = if v50 {
+                            true
+                        } else {
+                            let mut v51: bool = v49 == b'_';
+                            if v51 {
+                                true
+                            } else {
+                                let mut v52: bool = v49 == b'\\';
+                                if v52 {
+                                    true
+                                } else {
+                                    let mut v53: bool = v49 == b'`';
+                                    if v53 {
+                                        true
+                                    } else {
+                                        let mut v54: bool = v49 == b'[';
+                                        if v54 {
+                                            true
+                                        } else {
+                                            let mut v55: bool = v49 == b']';
+                                            if v55 {
+                                                true
+                                            } else {
+                                                let mut v56: bool = v49 == b'#';
+                                                if v56 {
+                                                    true
+                                                } else {
+                                                    let mut v57: bool = v49 == b'-';
+                                                    if v57 {
+                                                        true
+                                                    } else {
+                                                        let mut v58: bool = v49 == b'!';
+                                                        if v58 {
+                                                            true
+                                                        } else {
+                                                            let mut v59: bool = v49 == b'<';
+                                                            v59
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        };
+                        if v68 {
+                            let mut v69: i32 = v1.wrapping_add(2i32);
+                            let mut v70: bool = v35 == v69;
+                            let mut v74: Rc<str> = if v70 {
+                                let mut v71: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                v71.clone()
+                            } else {
+                                let mut v72: i32 = v69.wrapping_sub(1i32);
+                                let mut v73: Rc<str> = string_slice(&v0.clone(), v35 as i64, v72 as i64);
+                                v73.clone()
+                            };
+                            let mut v75: i32 = 0i32;
+                            let mut v76: i32 = 0i32;
+                            let mut v77: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                            let mut v78: Rc<str> = escape_from_15(v74.clone(), v75, v76, v77.clone());
+                            let mut v79: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), v78.clone()));
+                            (v0, v1, v2) = (v0.clone(), v69, v79.clone());
                             continue;
                         } else {
-                            let mut v46: u8 = v0.clone().as_bytes()[v38 as usize];
-                            let mut v47: bool = v46 == b'(';
-                            if v47 {
-                                let mut v48: u8 = b')';
-                                let mut v49: i32 = v30.wrapping_add(2i32);
-                                let mut v50: i32 = find_char_from_19(v0.clone(), v48, v49);
-                                let mut v51: bool = v50 == -1i32;
-                                if v51 {
-                                    let mut v52: Rc<str> = string_slice(&v0.clone(), v1 as i64, v1 as i64);
-                                    let mut v53: i32 = 0i32;
-                                    let mut v54: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
-                                    let mut v55: Rc<str> = escape_from_15(v52.clone(), v53, v54.clone());
-                                    let mut v56: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), v55.clone()));
-                                    (v0, v1, v2) = (v0.clone(), v29, v56.clone());
-                                    continue;
-                                } else {
-                                    let mut v58: i32 = v30.wrapping_sub(1i32);
-                                    let mut v59: Rc<str> = string_slice(&v0.clone(), v29 as i64, v58 as i64);
-                                    let mut v60: i32 = v50.wrapping_sub(1i32);
-                                    let mut v61: Rc<str> = string_slice(&v0.clone(), v49 as i64, v60 as i64);
-                                    let mut v62: i32 = v50.wrapping_add(1i32);
-                                    let mut v63: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("<a href="); } LIT.with(|lit| lit.clone()) }));
-                                    let mut v64: Rc<str> = Rc::<str>::from(format!("{}{}", v63.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("\""); } LIT.with(|lit| lit.clone()) }));
-                                    let mut v65: i32 = 0i32;
-                                    let mut v66: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
-                                    let mut v67: Rc<str> = escape_from_15(v61.clone(), v65, v66.clone());
-                                    let mut v68: Rc<str> = Rc::<str>::from(format!("{}{}", v64.clone(), v67.clone()));
-                                    let mut v69: Rc<str> = Rc::<str>::from(format!("{}{}", v68.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("\""); } LIT.with(|lit| lit.clone()) }));
-                                    let mut v70: Rc<str> = Rc::<str>::from(format!("{}{}", v69.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(">"); } LIT.with(|lit| lit.clone()) }));
-                                    let mut v71: i32 = 0i32;
-                                    let mut v72: Rc<str> = escape_from_15(v59.clone(), v71, v66.clone());
-                                    let mut v73: Rc<str> = Rc::<str>::from(format!("{}{}", v70.clone(), v72.clone()));
-                                    let mut v74: Rc<str> = Rc::<str>::from(format!("{}{}", v73.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</a>"); } LIT.with(|lit| lit.clone()) }));
-                                    (v0, v1, v2) = (v0.clone(), v62, v74.clone());
-                                    continue;
-                                }
+                            let mut v81: i32 = next_inline_marker_from_21(v0.clone(), v35);
+                            let mut v82: bool = v1 == v81;
+                            let mut v86: Rc<str> = if v82 {
+                                let mut v83: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                v83.clone()
                             } else {
-                                let mut v77: Rc<str> = string_slice(&v0.clone(), v1 as i64, v1 as i64);
-                                let mut v78: i32 = 0i32;
-                                let mut v79: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
-                                let mut v80: Rc<str> = escape_from_15(v77.clone(), v78, v79.clone());
-                                let mut v81: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), v80.clone()));
-                                (v0, v1, v2) = (v0.clone(), v29, v81.clone());
-                                continue;
-                            }
+                                let mut v84: i32 = v81.wrapping_sub(1i32);
+                                let mut v85: Rc<str> = string_slice(&v0.clone(), v1 as i64, v84 as i64);
+                                v85.clone()
+                            };
+                            let mut v87: i32 = 0i32;
+                            let mut v88: i32 = 0i32;
+                            let mut v89: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                            let mut v90: Rc<str> = escape_from_15(v86.clone(), v87, v88, v89.clone());
+                            let mut v91: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), v90.clone()));
+                            (v0, v1, v2) = (v0.clone(), v81, v91.clone());
+                            continue;
                         }
                     }
                 } else {
-                    let mut v86: i32 = v1.wrapping_add(1i32);
-                    let mut v87: Rc<str> = string_slice(&v0.clone(), v1 as i64, v1 as i64);
-                    let mut v88: i32 = 0i32;
-                    let mut v89: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
-                    let mut v90: Rc<str> = escape_from_15(v87.clone(), v88, v89.clone());
-                    let mut v91: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), v90.clone()));
-                    (v0, v1, v2) = (v0.clone(), v86, v91.clone());
-                    continue;
+                    let mut v95: bool = v5 == b'*';
+                    if v95 {
+                        let mut v96: i32 = v1.wrapping_add(1i32);
+                        let mut v97: bool = v96 == v3;
+                        if v97 {
+                            let mut v98: i32 = next_inline_marker_from_21(v0.clone(), v96);
+                            let mut v99: bool = v1 == v98;
+                            let mut v103: Rc<str> = if v99 {
+                                let mut v100: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                v100.clone()
+                            } else {
+                                let mut v101: i32 = v98.wrapping_sub(1i32);
+                                let mut v102: Rc<str> = string_slice(&v0.clone(), v1 as i64, v101 as i64);
+                                v102.clone()
+                            };
+                            let mut v104: i32 = 0i32;
+                            let mut v105: i32 = 0i32;
+                            let mut v106: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                            let mut v107: Rc<str> = escape_from_15(v103.clone(), v104, v105, v106.clone());
+                            let mut v108: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), v107.clone()));
+                            (v0, v1, v2) = (v0.clone(), v98, v108.clone());
+                            continue;
+                        } else {
+                            let mut v110: u8 = v0.clone().as_bytes()[v96 as usize];
+                            let mut v111: bool = v110 == b'*';
+                            if v111 {
+                                let mut v112: i32 = v1.wrapping_add(2i32);
+                                let mut v113: i32 = double_close_22(v0.clone(), v112);
+                                let mut v114: bool = v113 == -1i32;
+                                if v114 {
+                                    let mut v115: i32 = next_inline_marker_from_21(v0.clone(), v96);
+                                    let mut v116: bool = v1 == v115;
+                                    let mut v120: Rc<str> = if v116 {
+                                        let mut v117: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                        v117.clone()
+                                    } else {
+                                        let mut v118: i32 = v115.wrapping_sub(1i32);
+                                        let mut v119: Rc<str> = string_slice(&v0.clone(), v1 as i64, v118 as i64);
+                                        v119.clone()
+                                    };
+                                    let mut v121: i32 = 0i32;
+                                    let mut v122: i32 = 0i32;
+                                    let mut v123: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                    let mut v124: Rc<str> = escape_from_15(v120.clone(), v121, v122, v123.clone());
+                                    let mut v125: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), v124.clone()));
+                                    (v0, v1, v2) = (v0.clone(), v115, v125.clone());
+                                    continue;
+                                } else {
+                                    let mut v127: i32 = v113.wrapping_add(2i32);
+                                    let mut v128: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("<strong>"); } LIT.with(|lit| lit.clone()) }));
+                                    let mut v129: bool = v112 == v113;
+                                    let mut v133: Rc<str> = if v129 {
+                                        let mut v130: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                        v130.clone()
+                                    } else {
+                                        let mut v131: i32 = v113.wrapping_sub(1i32);
+                                        let mut v132: Rc<str> = string_slice(&v0.clone(), v112 as i64, v131 as i64);
+                                        v132.clone()
+                                    };
+                                    let mut v134: i32 = 0i32;
+                                    let mut v135: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                    let mut v136: Rc<str> = inline_from_19(v133.clone(), v134, v135.clone());
+                                    let mut v137: Rc<str> = Rc::<str>::from(format!("{}{}", v128.clone(), v136.clone()));
+                                    let mut v138: Rc<str> = Rc::<str>::from(format!("{}{}", v137.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</strong>"); } LIT.with(|lit| lit.clone()) }));
+                                    (v0, v1, v2) = (v0.clone(), v127, v138.clone());
+                                    continue;
+                                }
+                            } else {
+                                let mut v141: i32 = next_inline_marker_from_21(v0.clone(), v96);
+                                let mut v142: bool = v1 == v141;
+                                let mut v146: Rc<str> = if v142 {
+                                    let mut v143: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                    v143.clone()
+                                } else {
+                                    let mut v144: i32 = v141.wrapping_sub(1i32);
+                                    let mut v145: Rc<str> = string_slice(&v0.clone(), v1 as i64, v144 as i64);
+                                    v145.clone()
+                                };
+                                let mut v147: i32 = 0i32;
+                                let mut v148: i32 = 0i32;
+                                let mut v149: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                let mut v150: Rc<str> = escape_from_15(v146.clone(), v147, v148, v149.clone());
+                                let mut v151: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), v150.clone()));
+                                (v0, v1, v2) = (v0.clone(), v141, v151.clone());
+                                continue;
+                            }
+                        }
+                    } else {
+                        let mut v155: bool = v5 == b'<';
+                        if v155 {
+                            let mut v156: u8 = b'>';
+                            let mut v157: i32 = v1.wrapping_add(1i32);
+                            let mut v158: i32 = find_char_from_20(v0.clone(), v156, v157);
+                            let mut v159: bool = v158 == -1i32;
+                            if v159 {
+                                let mut v160: i32 = next_inline_marker_from_21(v0.clone(), v157);
+                                let mut v161: bool = v1 == v160;
+                                let mut v165: Rc<str> = if v161 {
+                                    let mut v162: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                    v162.clone()
+                                } else {
+                                    let mut v163: i32 = v160.wrapping_sub(1i32);
+                                    let mut v164: Rc<str> = string_slice(&v0.clone(), v1 as i64, v163 as i64);
+                                    v164.clone()
+                                };
+                                let mut v166: i32 = 0i32;
+                                let mut v167: i32 = 0i32;
+                                let mut v168: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                let mut v169: Rc<str> = escape_from_15(v165.clone(), v166, v167, v168.clone());
+                                let mut v170: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), v169.clone()));
+                                (v0, v1, v2) = (v0.clone(), v160, v170.clone());
+                                continue;
+                            } else {
+                                let mut v172: i32 = v1.wrapping_add(5i32);
+                                let mut v173: bool = v158 > v172;
+                                if v173 {
+                                    let mut v174: bool = v157 == v158;
+                                    let mut v178: Rc<str> = if v174 {
+                                        let mut v175: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                        v175.clone()
+                                    } else {
+                                        let mut v176: i32 = v158.wrapping_sub(1i32);
+                                        let mut v177: Rc<str> = string_slice(&v0.clone(), v157 as i64, v176 as i64);
+                                        v177.clone()
+                                    };
+                                    let mut v179: Rc<str> = string_slice(&v178.clone(), 0i32 as i64, 3i32 as i64);
+                                    let mut v180: bool = v179.clone() == { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("http"); } LIT.with(|lit| lit.clone()) };
+                                    if v180 {
+                                        let mut v181: i32 = v158.wrapping_add(1i32);
+                                        let mut v182: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("<a href="); } LIT.with(|lit| lit.clone()) }));
+                                        let mut v183: Rc<str> = Rc::<str>::from(format!("{}{}", v182.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("\""); } LIT.with(|lit| lit.clone()) }));
+                                        let mut v184: i32 = 0i32;
+                                        let mut v185: i32 = 0i32;
+                                        let mut v186: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                        let mut v187: Rc<str> = escape_from_15(v178.clone(), v184, v185, v186.clone());
+                                        let mut v188: Rc<str> = Rc::<str>::from(format!("{}{}", v183.clone(), v187.clone()));
+                                        let mut v189: Rc<str> = Rc::<str>::from(format!("{}{}", v188.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("\""); } LIT.with(|lit| lit.clone()) }));
+                                        let mut v190: Rc<str> = Rc::<str>::from(format!("{}{}", v189.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(">"); } LIT.with(|lit| lit.clone()) }));
+                                        let mut v191: i32 = 0i32;
+                                        let mut v192: i32 = 0i32;
+                                        let mut v193: Rc<str> = escape_from_15(v178.clone(), v191, v192, v186.clone());
+                                        let mut v194: Rc<str> = Rc::<str>::from(format!("{}{}", v190.clone(), v193.clone()));
+                                        let mut v195: Rc<str> = Rc::<str>::from(format!("{}{}", v194.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</a>"); } LIT.with(|lit| lit.clone()) }));
+                                        (v0, v1, v2) = (v0.clone(), v181, v195.clone());
+                                        continue;
+                                    } else {
+                                        let mut v197: i32 = next_inline_marker_from_21(v0.clone(), v157);
+                                        let mut v198: bool = v1 == v197;
+                                        let mut v202: Rc<str> = if v198 {
+                                            let mut v199: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                            v199.clone()
+                                        } else {
+                                            let mut v200: i32 = v197.wrapping_sub(1i32);
+                                            let mut v201: Rc<str> = string_slice(&v0.clone(), v1 as i64, v200 as i64);
+                                            v201.clone()
+                                        };
+                                        let mut v203: i32 = 0i32;
+                                        let mut v204: i32 = 0i32;
+                                        let mut v205: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                        let mut v206: Rc<str> = escape_from_15(v202.clone(), v203, v204, v205.clone());
+                                        let mut v207: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), v206.clone()));
+                                        (v0, v1, v2) = (v0.clone(), v197, v207.clone());
+                                        continue;
+                                    }
+                                } else {
+                                    let mut v210: i32 = next_inline_marker_from_21(v0.clone(), v157);
+                                    let mut v211: bool = v1 == v210;
+                                    let mut v215: Rc<str> = if v211 {
+                                        let mut v212: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                        v212.clone()
+                                    } else {
+                                        let mut v213: i32 = v210.wrapping_sub(1i32);
+                                        let mut v214: Rc<str> = string_slice(&v0.clone(), v1 as i64, v213 as i64);
+                                        v214.clone()
+                                    };
+                                    let mut v216: i32 = 0i32;
+                                    let mut v217: i32 = 0i32;
+                                    let mut v218: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                    let mut v219: Rc<str> = escape_from_15(v215.clone(), v216, v217, v218.clone());
+                                    let mut v220: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), v219.clone()));
+                                    (v0, v1, v2) = (v0.clone(), v210, v220.clone());
+                                    continue;
+                                }
+                            }
+                        } else {
+                            let mut v224: bool = v5 == b'!';
+                            if v224 {
+                                let mut v225: i32 = image_close_23(v0.clone(), v1);
+                                let mut v226: bool = v225 == -1i32;
+                                if v226 {
+                                    let mut v227: i32 = v1.wrapping_add(1i32);
+                                    let mut v228: i32 = next_inline_marker_from_21(v0.clone(), v227);
+                                    let mut v229: bool = v1 == v228;
+                                    let mut v233: Rc<str> = if v229 {
+                                        let mut v230: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                        v230.clone()
+                                    } else {
+                                        let mut v231: i32 = v228.wrapping_sub(1i32);
+                                        let mut v232: Rc<str> = string_slice(&v0.clone(), v1 as i64, v231 as i64);
+                                        v232.clone()
+                                    };
+                                    let mut v234: i32 = 0i32;
+                                    let mut v235: i32 = 0i32;
+                                    let mut v236: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                    let mut v237: Rc<str> = escape_from_15(v233.clone(), v234, v235, v236.clone());
+                                    let mut v238: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), v237.clone()));
+                                    (v0, v1, v2) = (v0.clone(), v228, v238.clone());
+                                    continue;
+                                } else {
+                                    let mut v240: i32 = v225.wrapping_add(1i32);
+                                    let mut v241: u8 = b']';
+                                    let mut v242: i32 = v1.wrapping_add(2i32);
+                                    let mut v243: i32 = find_char_from_20(v0.clone(), v241, v242);
+                                    let mut v244: i32 = v243.wrapping_add(2i32);
+                                    let mut v245: bool = v244 == v225;
+                                    let mut v249: Rc<str> = if v245 {
+                                        let mut v246: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                        v246.clone()
+                                    } else {
+                                        let mut v247: i32 = v225.wrapping_sub(1i32);
+                                        let mut v248: Rc<str> = string_slice(&v0.clone(), v244 as i64, v247 as i64);
+                                        v248.clone()
+                                    };
+                                    let mut v250: i32 = 0i32;
+                                    let mut v251: i32 = 0i32;
+                                    let mut v252: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                    let mut v253: Rc<str> = escape_from_15(v249.clone(), v250, v251, v252.clone());
+                                    let mut v254: Rc<str> = Rc::<str>::from(format!("{}{}", { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("<img src=\""); } LIT.with(|lit| lit.clone()) }, v253.clone()));
+                                    let mut v255: Rc<str> = Rc::<str>::from(format!("{}{}", v254.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("\""); } LIT.with(|lit| lit.clone()) }));
+                                    let mut v256: Rc<str> = Rc::<str>::from(format!("{}{}", v255.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(" alt="); } LIT.with(|lit| lit.clone()) }));
+                                    let mut v257: Rc<str> = Rc::<str>::from(format!("{}{}", v256.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("\""); } LIT.with(|lit| lit.clone()) }));
+                                    let mut v258: bool = v242 == v243;
+                                    let mut v261: Rc<str> = if v258 {
+                                        v252.clone()
+                                    } else {
+                                        let mut v259: i32 = v243.wrapping_sub(1i32);
+                                        let mut v260: Rc<str> = string_slice(&v0.clone(), v242 as i64, v259 as i64);
+                                        v260.clone()
+                                    };
+                                    let mut v262: i32 = 0i32;
+                                    let mut v263: i32 = 0i32;
+                                    let mut v264: Rc<str> = escape_from_15(v261.clone(), v262, v263, v252.clone());
+                                    let mut v265: Rc<str> = Rc::<str>::from(format!("{}{}", v257.clone(), v264.clone()));
+                                    let mut v266: Rc<str> = Rc::<str>::from(format!("{}{}", v265.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("\""); } LIT.with(|lit| lit.clone()) }));
+                                    let mut v267: Rc<str> = Rc::<str>::from(format!("{}{}", v266.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(">"); } LIT.with(|lit| lit.clone()) }));
+                                    let mut v268: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), v267.clone()));
+                                    (v0, v1, v2) = (v0.clone(), v240, v268.clone());
+                                    continue;
+                                }
+                            } else {
+                                let mut v271: i32 = badge_close_24(v0.clone(), v1);
+                                let mut v272: bool = v271 == -1i32;
+                                if v272 {
+                                    let mut v273: bool = v5 == b'[';
+                                    if v273 {
+                                        let mut v274: u8 = b']';
+                                        let mut v275: i32 = v1.wrapping_add(1i32);
+                                        let mut v276: i32 = find_char_from_20(v0.clone(), v274, v275);
+                                        let mut v277: bool = v276 == -1i32;
+                                        if v277 {
+                                            let mut v278: i32 = next_inline_marker_from_21(v0.clone(), v275);
+                                            let mut v279: bool = v1 == v278;
+                                            let mut v283: Rc<str> = if v279 {
+                                                let mut v280: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                                v280.clone()
+                                            } else {
+                                                let mut v281: i32 = v278.wrapping_sub(1i32);
+                                                let mut v282: Rc<str> = string_slice(&v0.clone(), v1 as i64, v281 as i64);
+                                                v282.clone()
+                                            };
+                                            let mut v284: i32 = 0i32;
+                                            let mut v285: i32 = 0i32;
+                                            let mut v286: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                            let mut v287: Rc<str> = escape_from_15(v283.clone(), v284, v285, v286.clone());
+                                            let mut v288: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), v287.clone()));
+                                            (v0, v1, v2) = (v0.clone(), v278, v288.clone());
+                                            continue;
+                                        } else {
+                                            let mut v290: i32 = v276.wrapping_add(1i32);
+                                            let mut v291: bool = v290 == v3;
+                                            if v291 {
+                                                let mut v292: i32 = next_inline_marker_from_21(v0.clone(), v275);
+                                                let mut v293: bool = v1 == v292;
+                                                let mut v297: Rc<str> = if v293 {
+                                                    let mut v294: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                                    v294.clone()
+                                                } else {
+                                                    let mut v295: i32 = v292.wrapping_sub(1i32);
+                                                    let mut v296: Rc<str> = string_slice(&v0.clone(), v1 as i64, v295 as i64);
+                                                    v296.clone()
+                                                };
+                                                let mut v298: i32 = 0i32;
+                                                let mut v299: i32 = 0i32;
+                                                let mut v300: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                                let mut v301: Rc<str> = escape_from_15(v297.clone(), v298, v299, v300.clone());
+                                                let mut v302: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), v301.clone()));
+                                                (v0, v1, v2) = (v0.clone(), v292, v302.clone());
+                                                continue;
+                                            } else {
+                                                let mut v304: u8 = v0.clone().as_bytes()[v290 as usize];
+                                                let mut v305: bool = v304 == b'(';
+                                                if v305 {
+                                                    let mut v306: u8 = b')';
+                                                    let mut v307: i32 = v276.wrapping_add(2i32);
+                                                    let mut v308: i32 = find_char_from_20(v0.clone(), v306, v307);
+                                                    let mut v309: bool = v308 == -1i32;
+                                                    if v309 {
+                                                        let mut v310: i32 = next_inline_marker_from_21(v0.clone(), v275);
+                                                        let mut v311: bool = v1 == v310;
+                                                        let mut v315: Rc<str> = if v311 {
+                                                            let mut v312: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                                            v312.clone()
+                                                        } else {
+                                                            let mut v313: i32 = v310.wrapping_sub(1i32);
+                                                            let mut v314: Rc<str> = string_slice(&v0.clone(), v1 as i64, v313 as i64);
+                                                            v314.clone()
+                                                        };
+                                                        let mut v316: i32 = 0i32;
+                                                        let mut v317: i32 = 0i32;
+                                                        let mut v318: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                                        let mut v319: Rc<str> = escape_from_15(v315.clone(), v316, v317, v318.clone());
+                                                        let mut v320: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), v319.clone()));
+                                                        (v0, v1, v2) = (v0.clone(), v310, v320.clone());
+                                                        continue;
+                                                    } else {
+                                                        let mut v322: i32 = v276.wrapping_sub(1i32);
+                                                        let mut v323: Rc<str> = string_slice(&v0.clone(), v275 as i64, v322 as i64);
+                                                        let mut v324: i32 = v308.wrapping_sub(1i32);
+                                                        let mut v325: Rc<str> = string_slice(&v0.clone(), v307 as i64, v324 as i64);
+                                                        let mut v326: i32 = v308.wrapping_add(1i32);
+                                                        let mut v327: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("<a href="); } LIT.with(|lit| lit.clone()) }));
+                                                        let mut v328: Rc<str> = Rc::<str>::from(format!("{}{}", v327.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("\""); } LIT.with(|lit| lit.clone()) }));
+                                                        let mut v329: i32 = 0i32;
+                                                        let mut v330: i32 = 0i32;
+                                                        let mut v331: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                                        let mut v332: Rc<str> = escape_from_15(v325.clone(), v329, v330, v331.clone());
+                                                        let mut v333: Rc<str> = Rc::<str>::from(format!("{}{}", v328.clone(), v332.clone()));
+                                                        let mut v334: Rc<str> = Rc::<str>::from(format!("{}{}", v333.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("\""); } LIT.with(|lit| lit.clone()) }));
+                                                        let mut v335: Rc<str> = Rc::<str>::from(format!("{}{}", v334.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(">"); } LIT.with(|lit| lit.clone()) }));
+                                                        let mut v336: i32 = 0i32;
+                                                        let mut v337: i32 = 0i32;
+                                                        let mut v338: Rc<str> = escape_from_15(v323.clone(), v336, v337, v331.clone());
+                                                        let mut v339: Rc<str> = Rc::<str>::from(format!("{}{}", v335.clone(), v338.clone()));
+                                                        let mut v340: Rc<str> = Rc::<str>::from(format!("{}{}", v339.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</a>"); } LIT.with(|lit| lit.clone()) }));
+                                                        (v0, v1, v2) = (v0.clone(), v326, v340.clone());
+                                                        continue;
+                                                    }
+                                                } else {
+                                                    let mut v343: i32 = next_inline_marker_from_21(v0.clone(), v275);
+                                                    let mut v344: bool = v1 == v343;
+                                                    let mut v348: Rc<str> = if v344 {
+                                                        let mut v345: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                                        v345.clone()
+                                                    } else {
+                                                        let mut v346: i32 = v343.wrapping_sub(1i32);
+                                                        let mut v347: Rc<str> = string_slice(&v0.clone(), v1 as i64, v346 as i64);
+                                                        v347.clone()
+                                                    };
+                                                    let mut v349: i32 = 0i32;
+                                                    let mut v350: i32 = 0i32;
+                                                    let mut v351: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                                    let mut v352: Rc<str> = escape_from_15(v348.clone(), v349, v350, v351.clone());
+                                                    let mut v353: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), v352.clone()));
+                                                    (v0, v1, v2) = (v0.clone(), v343, v353.clone());
+                                                    continue;
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        let mut v358: i32 = v1.wrapping_add(1i32);
+                                        let mut v359: i32 = next_inline_marker_from_21(v0.clone(), v358);
+                                        let mut v360: bool = v1 == v359;
+                                        let mut v364: Rc<str> = if v360 {
+                                            let mut v361: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                            v361.clone()
+                                        } else {
+                                            let mut v362: i32 = v359.wrapping_sub(1i32);
+                                            let mut v363: Rc<str> = string_slice(&v0.clone(), v1 as i64, v362 as i64);
+                                            v363.clone()
+                                        };
+                                        let mut v365: i32 = 0i32;
+                                        let mut v366: i32 = 0i32;
+                                        let mut v367: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                        let mut v368: Rc<str> = escape_from_15(v364.clone(), v365, v366, v367.clone());
+                                        let mut v369: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), v368.clone()));
+                                        (v0, v1, v2) = (v0.clone(), v359, v369.clone());
+                                        continue;
+                                    }
+                                } else {
+                                    let mut v372: i32 = badge_close_24(v0.clone(), v1);
+                                    let mut v373: i32 = v1.wrapping_add(1i32);
+                                    let mut v374: i32 = image_close_23(v0.clone(), v373);
+                                    let mut v375: i32 = v372.wrapping_add(1i32);
+                                    let mut v376: Rc<str> = Rc::<str>::from(format!("{}{}", v2.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("<a href="); } LIT.with(|lit| lit.clone()) }));
+                                    let mut v377: Rc<str> = Rc::<str>::from(format!("{}{}", v376.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("\""); } LIT.with(|lit| lit.clone()) }));
+                                    let mut v378: i32 = v374.wrapping_add(3i32);
+                                    let mut v379: bool = v378 == v372;
+                                    let mut v383: Rc<str> = if v379 {
+                                        let mut v380: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                        v380.clone()
+                                    } else {
+                                        let mut v381: i32 = v372.wrapping_sub(1i32);
+                                        let mut v382: Rc<str> = string_slice(&v0.clone(), v378 as i64, v381 as i64);
+                                        v382.clone()
+                                    };
+                                    let mut v384: i32 = 0i32;
+                                    let mut v385: i32 = 0i32;
+                                    let mut v386: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                    let mut v387: Rc<str> = escape_from_15(v383.clone(), v384, v385, v386.clone());
+                                    let mut v388: Rc<str> = Rc::<str>::from(format!("{}{}", v377.clone(), v387.clone()));
+                                    let mut v389: Rc<str> = Rc::<str>::from(format!("{}{}", v388.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("\""); } LIT.with(|lit| lit.clone()) }));
+                                    let mut v390: Rc<str> = Rc::<str>::from(format!("{}{}", v389.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(">"); } LIT.with(|lit| lit.clone()) }));
+                                    let mut v391: u8 = b']';
+                                    let mut v392: i32 = v373.wrapping_add(2i32);
+                                    let mut v393: i32 = find_char_from_20(v0.clone(), v391, v392);
+                                    let mut v394: i32 = v393.wrapping_add(2i32);
+                                    let mut v395: bool = v394 == v374;
+                                    let mut v398: Rc<str> = if v395 {
+                                        v386.clone()
+                                    } else {
+                                        let mut v396: i32 = v374.wrapping_sub(1i32);
+                                        let mut v397: Rc<str> = string_slice(&v0.clone(), v394 as i64, v396 as i64);
+                                        v397.clone()
+                                    };
+                                    let mut v399: i32 = 0i32;
+                                    let mut v400: i32 = 0i32;
+                                    let mut v401: Rc<str> = escape_from_15(v398.clone(), v399, v400, v386.clone());
+                                    let mut v402: Rc<str> = Rc::<str>::from(format!("{}{}", { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("<img src=\""); } LIT.with(|lit| lit.clone()) }, v401.clone()));
+                                    let mut v403: Rc<str> = Rc::<str>::from(format!("{}{}", v402.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("\""); } LIT.with(|lit| lit.clone()) }));
+                                    let mut v404: Rc<str> = Rc::<str>::from(format!("{}{}", v403.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(" alt="); } LIT.with(|lit| lit.clone()) }));
+                                    let mut v405: Rc<str> = Rc::<str>::from(format!("{}{}", v404.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("\""); } LIT.with(|lit| lit.clone()) }));
+                                    let mut v406: bool = v392 == v393;
+                                    let mut v409: Rc<str> = if v406 {
+                                        v386.clone()
+                                    } else {
+                                        let mut v407: i32 = v393.wrapping_sub(1i32);
+                                        let mut v408: Rc<str> = string_slice(&v0.clone(), v392 as i64, v407 as i64);
+                                        v408.clone()
+                                    };
+                                    let mut v410: i32 = 0i32;
+                                    let mut v411: i32 = 0i32;
+                                    let mut v412: Rc<str> = escape_from_15(v409.clone(), v410, v411, v386.clone());
+                                    let mut v413: Rc<str> = Rc::<str>::from(format!("{}{}", v405.clone(), v412.clone()));
+                                    let mut v414: Rc<str> = Rc::<str>::from(format!("{}{}", v413.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("\""); } LIT.with(|lit| lit.clone()) }));
+                                    let mut v415: Rc<str> = Rc::<str>::from(format!("{}{}", v414.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(">"); } LIT.with(|lit| lit.clone()) }));
+                                    let mut v416: Rc<str> = Rc::<str>::from(format!("{}{}", v390.clone(), v415.clone()));
+                                    let mut v417: Rc<str> = Rc::<str>::from(format!("{}{}", v416.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</a>"); } LIT.with(|lit| lit.clone()) }));
+                                    (v0, v1, v2) = (v0.clone(), v375, v417.clone());
+                                    continue;
+                                }
+                            }
+                        }
+                    }
                 }
+            }
+        }
+    }
+}
+fn lead_spaces_25(mut v0: Rc<str>, mut v1: i32) -> i32 {
+    loop {
+        let mut v2: i32 = (v0.clone().len() as i32);
+        let mut v3: bool = v1 == v2;
+        if v3 {
+            return v1;
+        } else {
+            let mut v4: u8 = v0.clone().as_bytes()[v1 as usize];
+            let mut v5: bool = v4 == b' ';
+            if v5 {
+                let mut v6: i32 = v1.wrapping_add(1i32);
+                (v0, v1) = (v0.clone(), v6);
+                continue;
+            } else {
+                return v1;
             }
         }
     }
@@ -982,265 +1735,309 @@ fn markdown_lines_13(mut v0: Rc<str>, mut v1: i32, mut v2: US0, mut v3: Rc<str>)
                     } else {
                         let mut v25: US0 = US0::US0_MdCode;
                         let mut v26: i32 = 0i32;
-                        let mut v27: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
-                        let mut v28: Rc<str> = escape_from_15(v17.clone(), v26, v27.clone());
-                        let mut v29: Rc<str> = Rc::<str>::from(format!("{}{}", v3.clone(), v28.clone()));
-                        let mut v30: Rc<str> = Rc::<str>::from(format!("{}{}", v29.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("\n"); } LIT.with(|lit| lit.clone()) }));
-                        (v0, v1, v2, v3) = (v0.clone(), v18, v25.clone(), v30.clone());
+                        let mut v27: i32 = 0i32;
+                        let mut v28: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                        let mut v29: Rc<str> = escape_from_15(v17.clone(), v26, v27, v28.clone());
+                        let mut v30: Rc<str> = Rc::<str>::from(format!("{}{}", v3.clone(), v29.clone()));
+                        let mut v31: Rc<str> = Rc::<str>::from(format!("{}{}", v30.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("\n"); } LIT.with(|lit| lit.clone()) }));
+                        (v0, v1, v2, v3) = (v0.clone(), v18, v25.clone(), v31.clone());
                         continue;
                     }
                 }
                 _ => {
-                    let mut v33: i32 = 0i32;
-                    let mut v34: i32 = count_hashes_16(v17.clone(), v33);
-                    let mut v35: bool = v34 == 0i32;
-                    let mut v44: i32 = if v35 {
+                    let mut v34: i32 = 0i32;
+                    let mut v35: i32 = count_hashes_17(v17.clone(), v34);
+                    let mut v36: bool = v35 == 0i32;
+                    let mut v45: i32 = if v36 {
                         0i32
                     } else {
-                        let mut v36: bool = v34 > 6i32;
-                        if v36 {
+                        let mut v37: bool = v35 > 6i32;
+                        if v37 {
                             0i32
                         } else {
-                            let mut v37: i32 = (v17.clone().len() as i32);
-                            let mut v38: bool = v34 == v37;
-                            if v38 {
+                            let mut v38: i32 = (v17.clone().len() as i32);
+                            let mut v39: bool = v35 == v38;
+                            if v39 {
                                 0i32
                             } else {
-                                let mut v39: u8 = v17.clone().as_bytes()[v34 as usize];
-                                let mut v40: bool = v39 == b' ';
-                                if v40 {
-                                    v34
+                                let mut v40: u8 = v17.clone().as_bytes()[v35 as usize];
+                                let mut v41: bool = v40 == b' ';
+                                if v41 {
+                                    v35
                                 } else {
                                     0i32
                                 }
                             }
                         }
                     };
-                    let mut v45: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("```"); } LIT.with(|lit| lit.clone()) };
-                    let mut v46: i32 = 0i32;
-                    let mut v47: bool = starts_at_14(v17.clone(), v45.clone(), v46);
-                    if v47 {
-                        let mut v48: US0 = US0::US0_MdCode;
-                        let mut v54: Rc<str> = match &v2 {
+                    let mut v46: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("```"); } LIT.with(|lit| lit.clone()) };
+                    let mut v47: i32 = 0i32;
+                    let mut v48: bool = starts_at_14(v17.clone(), v46.clone(), v47);
+                    if v48 {
+                        let mut v49: US0 = US0::US0_MdCode;
+                        let mut v55: Rc<str> = match &v2 {
                             US0::US0_MdList => {
-                                let mut v51: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</ul>\n"); } LIT.with(|lit| lit.clone()) };
-                                v51.clone()
+                                let mut v52: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</ul>\n"); } LIT.with(|lit| lit.clone()) };
+                                v52.clone()
                             }
                             US0::US0_MdNone => {
-                                let mut v49: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
-                                v49.clone()
+                                let mut v50: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                v50.clone()
                             }
                             US0::US0_MdParagraph => {
-                                let mut v50: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</p>\n"); } LIT.with(|lit| lit.clone()) };
-                                v50.clone()
+                                let mut v51: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</p>\n"); } LIT.with(|lit| lit.clone()) };
+                                v51.clone()
                             }
                             _ => unreachable!(),
                         };
-                        let mut v55: Rc<str> = Rc::<str>::from(format!("{}{}", v3.clone(), v54.clone()));
-                        let mut v56: Rc<str> = Rc::<str>::from(format!("{}{}", v55.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("<pre><code>"); } LIT.with(|lit| lit.clone()) }));
-                        (v0, v1, v2, v3) = (v0.clone(), v18, v48.clone(), v56.clone());
+                        let mut v56: Rc<str> = Rc::<str>::from(format!("{}{}", v3.clone(), v55.clone()));
+                        let mut v57: Rc<str> = Rc::<str>::from(format!("{}{}", v56.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("<pre><code>"); } LIT.with(|lit| lit.clone()) }));
+                        (v0, v1, v2, v3) = (v0.clone(), v18, v49.clone(), v57.clone());
                         continue;
                     } else {
-                        let mut v58: i32 = 0i32;
-                        let mut v59: bool = blank_from_17(v17.clone(), v58);
-                        if v59 {
-                            let mut v60: US0 = US0::US0_MdNone;
-                            let mut v66: Rc<str> = match &v2 {
+                        let mut v59: i32 = 0i32;
+                        let mut v60: bool = blank_from_18(v17.clone(), v59);
+                        if v60 {
+                            let mut v61: US0 = US0::US0_MdNone;
+                            let mut v67: Rc<str> = match &v2 {
                                 US0::US0_MdList => {
-                                    let mut v63: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</ul>\n"); } LIT.with(|lit| lit.clone()) };
-                                    v63.clone()
+                                    let mut v64: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</ul>\n"); } LIT.with(|lit| lit.clone()) };
+                                    v64.clone()
                                 }
                                 US0::US0_MdNone => {
-                                    let mut v61: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
-                                    v61.clone()
+                                    let mut v62: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                    v62.clone()
                                 }
                                 US0::US0_MdParagraph => {
-                                    let mut v62: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</p>\n"); } LIT.with(|lit| lit.clone()) };
-                                    v62.clone()
+                                    let mut v63: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</p>\n"); } LIT.with(|lit| lit.clone()) };
+                                    v63.clone()
                                 }
                                 _ => unreachable!(),
                             };
-                            let mut v67: Rc<str> = Rc::<str>::from(format!("{}{}", v3.clone(), v66.clone()));
-                            (v0, v1, v2, v3) = (v0.clone(), v18, v60.clone(), v67.clone());
+                            let mut v68: Rc<str> = Rc::<str>::from(format!("{}{}", v3.clone(), v67.clone()));
+                            (v0, v1, v2, v3) = (v0.clone(), v18, v61.clone(), v68.clone());
                             continue;
                         } else {
-                            let mut v69: bool = v44 > 0i32;
-                            if v69 {
-                                let mut v70: bool = v44 == 1i32;
-                                let mut v85: Rc<str> = if v70 {
-                                    let mut v71: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("h1"); } LIT.with(|lit| lit.clone()) };
-                                    v71.clone()
+                            let mut v70: bool = v45 > 0i32;
+                            if v70 {
+                                let mut v71: bool = v45 == 1i32;
+                                let mut v86: Rc<str> = if v71 {
+                                    let mut v72: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("h1"); } LIT.with(|lit| lit.clone()) };
+                                    v72.clone()
                                 } else {
-                                    let mut v72: bool = v44 == 2i32;
-                                    if v72 {
-                                        let mut v73: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("h2"); } LIT.with(|lit| lit.clone()) };
-                                        v73.clone()
+                                    let mut v73: bool = v45 == 2i32;
+                                    if v73 {
+                                        let mut v74: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("h2"); } LIT.with(|lit| lit.clone()) };
+                                        v74.clone()
                                     } else {
-                                        let mut v74: bool = v44 == 3i32;
-                                        if v74 {
-                                            let mut v75: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("h3"); } LIT.with(|lit| lit.clone()) };
-                                            v75.clone()
+                                        let mut v75: bool = v45 == 3i32;
+                                        if v75 {
+                                            let mut v76: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("h3"); } LIT.with(|lit| lit.clone()) };
+                                            v76.clone()
                                         } else {
-                                            let mut v76: bool = v44 == 4i32;
-                                            if v76 {
-                                                let mut v77: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("h4"); } LIT.with(|lit| lit.clone()) };
-                                                v77.clone()
+                                            let mut v77: bool = v45 == 4i32;
+                                            if v77 {
+                                                let mut v78: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("h4"); } LIT.with(|lit| lit.clone()) };
+                                                v78.clone()
                                             } else {
-                                                let mut v78: bool = v44 == 5i32;
-                                                if v78 {
-                                                    let mut v79: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("h5"); } LIT.with(|lit| lit.clone()) };
-                                                    v79.clone()
-                                                } else {
-                                                    let mut v80: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("h6"); } LIT.with(|lit| lit.clone()) };
+                                                let mut v79: bool = v45 == 5i32;
+                                                if v79 {
+                                                    let mut v80: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("h5"); } LIT.with(|lit| lit.clone()) };
                                                     v80.clone()
+                                                } else {
+                                                    let mut v81: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("h6"); } LIT.with(|lit| lit.clone()) };
+                                                    v81.clone()
                                                 }
                                             }
                                         }
                                     }
                                 };
-                                let mut v86: i32 = v44.wrapping_add(1i32);
-                                let mut v87: i32 = (v17.clone().len() as i32);
-                                let mut v88: i32 = v87.wrapping_sub(1i32);
-                                let mut v89: Rc<str> = string_slice(&v17.clone(), v86 as i64, v88 as i64);
-                                let mut v90: US0 = US0::US0_MdNone;
-                                let mut v96: Rc<str> = match &v2 {
+                                let mut v87: i32 = v45.wrapping_add(1i32);
+                                let mut v88: i32 = (v17.clone().len() as i32);
+                                let mut v89: i32 = v88.wrapping_sub(1i32);
+                                let mut v90: Rc<str> = string_slice(&v17.clone(), v87 as i64, v89 as i64);
+                                let mut v91: US0 = US0::US0_MdNone;
+                                let mut v97: Rc<str> = match &v2 {
                                     US0::US0_MdList => {
-                                        let mut v93: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</ul>\n"); } LIT.with(|lit| lit.clone()) };
-                                        v93.clone()
+                                        let mut v94: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</ul>\n"); } LIT.with(|lit| lit.clone()) };
+                                        v94.clone()
                                     }
                                     US0::US0_MdNone => {
-                                        let mut v91: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
-                                        v91.clone()
+                                        let mut v92: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                        v92.clone()
                                     }
                                     US0::US0_MdParagraph => {
-                                        let mut v92: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</p>\n"); } LIT.with(|lit| lit.clone()) };
-                                        v92.clone()
+                                        let mut v93: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</p>\n"); } LIT.with(|lit| lit.clone()) };
+                                        v93.clone()
                                     }
                                     _ => unreachable!(),
                                 };
-                                let mut v97: Rc<str> = Rc::<str>::from(format!("{}{}", v3.clone(), v96.clone()));
-                                let mut v98: Rc<str> = Rc::<str>::from(format!("{}{}", v97.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("<"); } LIT.with(|lit| lit.clone()) }));
-                                let mut v99: Rc<str> = Rc::<str>::from(format!("{}{}", v98.clone(), v85.clone()));
-                                let mut v100: Rc<str> = Rc::<str>::from(format!("{}{}", v99.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(">"); } LIT.with(|lit| lit.clone()) }));
-                                let mut v101: i32 = 0i32;
-                                let mut v102: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
-                                let mut v103: Rc<str> = inline_from_18(v89.clone(), v101, v102.clone());
-                                let mut v104: Rc<str> = Rc::<str>::from(format!("{}{}", v100.clone(), v103.clone()));
-                                let mut v105: Rc<str> = Rc::<str>::from(format!("{}{}", v104.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</"); } LIT.with(|lit| lit.clone()) }));
-                                let mut v106: Rc<str> = Rc::<str>::from(format!("{}{}", v105.clone(), v85.clone()));
-                                let mut v107: Rc<str> = Rc::<str>::from(format!("{}{}", v106.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(">\n"); } LIT.with(|lit| lit.clone()) }));
-                                (v0, v1, v2, v3) = (v0.clone(), v18, v90.clone(), v107.clone());
+                                let mut v98: Rc<str> = Rc::<str>::from(format!("{}{}", v3.clone(), v97.clone()));
+                                let mut v99: Rc<str> = Rc::<str>::from(format!("{}{}", v98.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("<"); } LIT.with(|lit| lit.clone()) }));
+                                let mut v100: Rc<str> = Rc::<str>::from(format!("{}{}", v99.clone(), v86.clone()));
+                                let mut v101: Rc<str> = Rc::<str>::from(format!("{}{}", v100.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(">"); } LIT.with(|lit| lit.clone()) }));
+                                let mut v102: i32 = 0i32;
+                                let mut v103: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                let mut v104: Rc<str> = inline_from_19(v90.clone(), v102, v103.clone());
+                                let mut v105: Rc<str> = Rc::<str>::from(format!("{}{}", v101.clone(), v104.clone()));
+                                let mut v106: Rc<str> = Rc::<str>::from(format!("{}{}", v105.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</"); } LIT.with(|lit| lit.clone()) }));
+                                let mut v107: Rc<str> = Rc::<str>::from(format!("{}{}", v106.clone(), v86.clone()));
+                                let mut v108: Rc<str> = Rc::<str>::from(format!("{}{}", v107.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(">\n"); } LIT.with(|lit| lit.clone()) }));
+                                (v0, v1, v2, v3) = (v0.clone(), v18, v91.clone(), v108.clone());
                                 continue;
                             } else {
-                                let mut v109: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("- "); } LIT.with(|lit| lit.clone()) };
-                                let mut v110: i32 = 0i32;
-                                let mut v111: bool = starts_at_14(v17.clone(), v109.clone(), v110);
-                                if v111 {
-                                    let mut v112: i32 = (v17.clone().len() as i32);
-                                    let mut v113: i32 = v112.wrapping_sub(1i32);
-                                    let mut v114: Rc<str> = string_slice(&v17.clone(), 2i32 as i64, v113 as i64);
-                                    let mut v115: i32 = 0i32;
-                                    let mut v116: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
-                                    let mut v117: Rc<str> = inline_from_18(v114.clone(), v115, v116.clone());
-                                    let mut v118: Rc<str> = Rc::<str>::from(format!("{}{}", { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("<li>"); } LIT.with(|lit| lit.clone()) }, v117.clone()));
-                                    let mut v119: Rc<str> = Rc::<str>::from(format!("{}{}", v118.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</li>\n"); } LIT.with(|lit| lit.clone()) }));
-                                    match &v2 {
+                                let mut v110: bool = v17.clone() == { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("---"); } LIT.with(|lit| lit.clone()) };
+                                if v110 {
+                                    let mut v111: US0 = US0::US0_MdNone;
+                                    let mut v117: Rc<str> = match &v2 {
                                         US0::US0_MdList => {
-                                            let mut v120: US0 = US0::US0_MdList;
-                                            let mut v121: Rc<str> = Rc::<str>::from(format!("{}{}", v3.clone(), v119.clone()));
-                                            (v0, v1, v2, v3) = (v0.clone(), v18, v120.clone(), v121.clone());
-                                            continue;
+                                            let mut v114: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</ul>\n"); } LIT.with(|lit| lit.clone()) };
+                                            v114.clone()
                                         }
-                                        _ => {
-                                            let mut v123: US0 = US0::US0_MdList;
-                                            let mut v126: Rc<str> = match &v2 {
-                                                US0::US0_MdNone => {
-                                                    v116.clone()
-                                                }
-                                                US0::US0_MdParagraph => {
-                                                    let mut v124: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</p>\n"); } LIT.with(|lit| lit.clone()) };
-                                                    v124.clone()
-                                                }
-                                                _ => unreachable!(),
-                                            };
-                                            let mut v127: Rc<str> = Rc::<str>::from(format!("{}{}", v3.clone(), v126.clone()));
-                                            let mut v128: Rc<str> = Rc::<str>::from(format!("{}{}", v127.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("<ul>\n"); } LIT.with(|lit| lit.clone()) }));
-                                            let mut v129: Rc<str> = Rc::<str>::from(format!("{}{}", v128.clone(), v119.clone()));
-                                            (v0, v1, v2, v3) = (v0.clone(), v18, v123.clone(), v129.clone());
-                                            continue;
+                                        US0::US0_MdNone => {
+                                            let mut v112: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                            v112.clone()
                                         }
-                                    }
+                                        US0::US0_MdParagraph => {
+                                            let mut v113: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</p>\n"); } LIT.with(|lit| lit.clone()) };
+                                            v113.clone()
+                                        }
+                                        _ => unreachable!(),
+                                    };
+                                    let mut v118: Rc<str> = Rc::<str>::from(format!("{}{}", v3.clone(), v117.clone()));
+                                    let mut v119: Rc<str> = Rc::<str>::from(format!("{}{}", v118.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("<hr>\n"); } LIT.with(|lit| lit.clone()) }));
+                                    (v0, v1, v2, v3) = (v0.clone(), v18, v111.clone(), v119.clone());
+                                    continue;
                                 } else {
-                                    let mut v132: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("* "); } LIT.with(|lit| lit.clone()) };
-                                    let mut v133: i32 = 0i32;
-                                    let mut v134: bool = starts_at_14(v17.clone(), v132.clone(), v133);
-                                    if v134 {
-                                        let mut v135: i32 = (v17.clone().len() as i32);
-                                        let mut v136: i32 = v135.wrapping_sub(1i32);
-                                        let mut v137: Rc<str> = string_slice(&v17.clone(), 2i32 as i64, v136 as i64);
-                                        let mut v138: i32 = 0i32;
-                                        let mut v139: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
-                                        let mut v140: Rc<str> = inline_from_18(v137.clone(), v138, v139.clone());
-                                        let mut v141: Rc<str> = Rc::<str>::from(format!("{}{}", { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("<li>"); } LIT.with(|lit| lit.clone()) }, v140.clone()));
-                                        let mut v142: Rc<str> = Rc::<str>::from(format!("{}{}", v141.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</li>\n"); } LIT.with(|lit| lit.clone()) }));
+                                    let mut v121: i32 = 0i32;
+                                    let mut v122: i32 = lead_spaces_25(v17.clone(), v121);
+                                    let mut v123: i32 = v122.wrapping_add(2i32);
+                                    let mut v124: i32 = (v17.clone().len() as i32);
+                                    let mut v125: bool = v123 > v124;
+                                    let mut v135: i32 = if v125 {
+                                        -1i32
+                                    } else {
+                                        let mut v126: i32 = v122.wrapping_add(1i32);
+                                        let mut v127: u8 = v17.clone().as_bytes()[v126 as usize];
+                                        let mut v128: bool = v127 == b' ';
+                                        if v128 {
+                                            let mut v129: u8 = v17.clone().as_bytes()[v122 as usize];
+                                            let mut v130: bool = v129 == b'-';
+                                            if v130 {
+                                                v123
+                                            } else {
+                                                let mut v131: bool = v129 == b'*';
+                                                if v131 {
+                                                    v123
+                                                } else {
+                                                    -1i32
+                                                }
+                                            }
+                                        } else {
+                                            -1i32
+                                        }
+                                    };
+                                    let mut v136: bool = v135 > 0i32;
+                                    if v136 {
+                                        let mut v137: i32 = 0i32;
+                                        let mut v138: i32 = lead_spaces_25(v17.clone(), v137);
+                                        let mut v139: i32 = v138.wrapping_add(2i32);
+                                        let mut v140: bool = v139 > v124;
+                                        let mut v150: i32 = if v140 {
+                                            -1i32
+                                        } else {
+                                            let mut v141: i32 = v138.wrapping_add(1i32);
+                                            let mut v142: u8 = v17.clone().as_bytes()[v141 as usize];
+                                            let mut v143: bool = v142 == b' ';
+                                            if v143 {
+                                                let mut v144: u8 = v17.clone().as_bytes()[v138 as usize];
+                                                let mut v145: bool = v144 == b'-';
+                                                if v145 {
+                                                    v139
+                                                } else {
+                                                    let mut v146: bool = v144 == b'*';
+                                                    if v146 {
+                                                        v139
+                                                    } else {
+                                                        -1i32
+                                                    }
+                                                }
+                                            } else {
+                                                -1i32
+                                            }
+                                        };
+                                        let mut v151: bool = v150 == v124;
+                                        let mut v155: Rc<str> = if v151 {
+                                            let mut v152: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                            v152.clone()
+                                        } else {
+                                            let mut v153: i32 = v124.wrapping_sub(1i32);
+                                            let mut v154: Rc<str> = string_slice(&v17.clone(), v150 as i64, v153 as i64);
+                                            v154.clone()
+                                        };
+                                        let mut v156: i32 = 0i32;
+                                        let mut v157: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                        let mut v158: Rc<str> = inline_from_19(v155.clone(), v156, v157.clone());
+                                        let mut v159: Rc<str> = Rc::<str>::from(format!("{}{}", { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("<li>"); } LIT.with(|lit| lit.clone()) }, v158.clone()));
+                                        let mut v160: Rc<str> = Rc::<str>::from(format!("{}{}", v159.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</li>\n"); } LIT.with(|lit| lit.clone()) }));
                                         match &v2 {
                                             US0::US0_MdList => {
-                                                let mut v143: US0 = US0::US0_MdList;
-                                                let mut v144: Rc<str> = Rc::<str>::from(format!("{}{}", v3.clone(), v142.clone()));
-                                                (v0, v1, v2, v3) = (v0.clone(), v18, v143.clone(), v144.clone());
+                                                let mut v161: US0 = US0::US0_MdList;
+                                                let mut v162: Rc<str> = Rc::<str>::from(format!("{}{}", v3.clone(), v160.clone()));
+                                                (v0, v1, v2, v3) = (v0.clone(), v18, v161.clone(), v162.clone());
                                                 continue;
                                             }
                                             _ => {
-                                                let mut v146: US0 = US0::US0_MdList;
-                                                let mut v149: Rc<str> = match &v2 {
+                                                let mut v164: US0 = US0::US0_MdList;
+                                                let mut v167: Rc<str> = match &v2 {
                                                     US0::US0_MdNone => {
-                                                        v139.clone()
+                                                        v157.clone()
                                                     }
                                                     US0::US0_MdParagraph => {
-                                                        let mut v147: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</p>\n"); } LIT.with(|lit| lit.clone()) };
-                                                        v147.clone()
+                                                        let mut v165: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</p>\n"); } LIT.with(|lit| lit.clone()) };
+                                                        v165.clone()
                                                     }
                                                     _ => unreachable!(),
                                                 };
-                                                let mut v150: Rc<str> = Rc::<str>::from(format!("{}{}", v3.clone(), v149.clone()));
-                                                let mut v151: Rc<str> = Rc::<str>::from(format!("{}{}", v150.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("<ul>\n"); } LIT.with(|lit| lit.clone()) }));
-                                                let mut v152: Rc<str> = Rc::<str>::from(format!("{}{}", v151.clone(), v142.clone()));
-                                                (v0, v1, v2, v3) = (v0.clone(), v18, v146.clone(), v152.clone());
+                                                let mut v168: Rc<str> = Rc::<str>::from(format!("{}{}", v3.clone(), v167.clone()));
+                                                let mut v169: Rc<str> = Rc::<str>::from(format!("{}{}", v168.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("<ul>\n"); } LIT.with(|lit| lit.clone()) }));
+                                                let mut v170: Rc<str> = Rc::<str>::from(format!("{}{}", v169.clone(), v160.clone()));
+                                                (v0, v1, v2, v3) = (v0.clone(), v18, v164.clone(), v170.clone());
                                                 continue;
                                             }
                                         }
                                     } else {
                                         match &v2 {
                                             US0::US0_MdParagraph => {
-                                                let mut v155: US0 = US0::US0_MdParagraph;
-                                                let mut v156: Rc<str> = Rc::<str>::from(format!("{}{}", v3.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(" "); } LIT.with(|lit| lit.clone()) }));
-                                                let mut v157: i32 = 0i32;
-                                                let mut v158: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
-                                                let mut v159: Rc<str> = inline_from_18(v17.clone(), v157, v158.clone());
-                                                let mut v160: Rc<str> = Rc::<str>::from(format!("{}{}", v156.clone(), v159.clone()));
-                                                (v0, v1, v2, v3) = (v0.clone(), v18, v155.clone(), v160.clone());
+                                                let mut v173: US0 = US0::US0_MdParagraph;
+                                                let mut v174: Rc<str> = Rc::<str>::from(format!("{}{}", v3.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(" "); } LIT.with(|lit| lit.clone()) }));
+                                                let mut v175: i32 = 0i32;
+                                                let mut v176: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                                let mut v177: Rc<str> = inline_from_19(v17.clone(), v175, v176.clone());
+                                                let mut v178: Rc<str> = Rc::<str>::from(format!("{}{}", v174.clone(), v177.clone()));
+                                                (v0, v1, v2, v3) = (v0.clone(), v18, v173.clone(), v178.clone());
                                                 continue;
                                             }
                                             _ => {
-                                                let mut v162: US0 = US0::US0_MdParagraph;
-                                                let mut v166: Rc<str> = match &v2 {
+                                                let mut v180: US0 = US0::US0_MdParagraph;
+                                                let mut v184: Rc<str> = match &v2 {
                                                     US0::US0_MdList => {
-                                                        let mut v164: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</ul>\n"); } LIT.with(|lit| lit.clone()) };
-                                                        v164.clone()
+                                                        let mut v182: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("</ul>\n"); } LIT.with(|lit| lit.clone()) };
+                                                        v182.clone()
                                                     }
                                                     US0::US0_MdNone => {
-                                                        let mut v163: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
-                                                        v163.clone()
+                                                        let mut v181: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                                        v181.clone()
                                                     }
                                                     _ => unreachable!(),
                                                 };
-                                                let mut v167: Rc<str> = Rc::<str>::from(format!("{}{}", v3.clone(), v166.clone()));
-                                                let mut v168: Rc<str> = Rc::<str>::from(format!("{}{}", v167.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("<p>"); } LIT.with(|lit| lit.clone()) }));
-                                                let mut v169: i32 = 0i32;
-                                                let mut v170: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
-                                                let mut v171: Rc<str> = inline_from_18(v17.clone(), v169, v170.clone());
-                                                let mut v172: Rc<str> = Rc::<str>::from(format!("{}{}", v168.clone(), v171.clone()));
-                                                (v0, v1, v2, v3) = (v0.clone(), v18, v162.clone(), v172.clone());
+                                                let mut v185: Rc<str> = Rc::<str>::from(format!("{}{}", v3.clone(), v184.clone()));
+                                                let mut v186: Rc<str> = Rc::<str>::from(format!("{}{}", v185.clone(), { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("<p>"); } LIT.with(|lit| lit.clone()) }));
+                                                let mut v187: i32 = 0i32;
+                                                let mut v188: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from(""); } LIT.with(|lit| lit.clone()) };
+                                                let mut v189: Rc<str> = inline_from_19(v17.clone(), v187, v188.clone());
+                                                let mut v190: Rc<str> = Rc::<str>::from(format!("{}{}", v186.clone(), v189.clone()));
+                                                (v0, v1, v2, v3) = (v0.clone(), v18, v180.clone(), v190.clone());
                                                 continue;
                                             }
                                         }
@@ -1254,7 +2051,7 @@ fn markdown_lines_13(mut v0: Rc<str>, mut v1: i32, mut v2: US0, mut v3: Rc<str>)
         }
     }
 }
-fn flag_at_20(mut v0: Rc<str>, mut v1: i32, mut v2: i32) -> i32 {
+fn flag_at_26(mut v0: Rc<str>, mut v1: i32, mut v2: i32) -> i32 {
     loop {
         let mut v3: bool = v1 == v2;
         if v3 {
@@ -1600,7 +2397,7 @@ fn spiral_main() -> i32 {
             };
             let mut v241: bool = v240 == 0i32;
             let mut v245: i32 = if v241 {
-                let mut v243: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("# Title\n\nSome `code` and [a link](x.html).\n\n- one\n- two <b>\n\n```\nlet x = 1 < 2\n```\n"); } LIT.with(|lit| lit.clone()) };
+                let mut v243: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("# Title\n\nSome `code` and [a link](x.html).\n\n- one\n- two <b>\n\n봉쥬르 & é [깃허브](k.html)\n\nHi! ![logo](logo.png) [![CI](b.svg)](ci.html)\n\n**Bold** and <https://x.org> and \\*star\\*\n\n---\n\n- top\n  - nested\n\n```\nlet x = 1 < 2\n```\n"); } LIT.with(|lit| lit.clone()) };
                 let mut v244: i32 = i32::from(std::fs::write(v221.as_ref(), v243.as_ref().as_bytes()).is_err());
                 v244
             } else {
@@ -1619,7 +2416,7 @@ fn spiral_main() -> i32 {
             } else {
                 v23.clone()
             };
-            let mut v258: bool = v257.clone() == { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("<section class=\"readme\">\n<h1>Title</h1>\n<p>Some <code>code</code> and <a href=\"x.html\">a link</a>.</p>\n<ul>\n<li>one</li>\n<li>two &lt;b&gt;</li>\n</ul>\n<pre><code>let x = 1 &lt; 2\n</code></pre>\n</section>\n"); } LIT.with(|lit| lit.clone()) };
+            let mut v258: bool = v257.clone() == { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("<section class=\"readme\">\n<h1>Title</h1>\n<p>Some <code>code</code> and <a href=\"x.html\">a link</a>.</p>\n<ul>\n<li>one</li>\n<li>two &lt;b&gt;</li>\n</ul>\n<p>봉쥬르 &amp; é <a href=\"k.html\">깃허브</a></p>\n<p>Hi! <img src=\"logo.png\" alt=\"logo\"> <a href=\"ci.html\"><img src=\"b.svg\" alt=\"CI\"></a></p>\n<p><strong>Bold</strong> and <a href=\"https://x.org\">https://x.org</a> and *star*</p>\n<hr>\n<ul>\n<li>top</li>\n<li>nested</li>\n</ul>\n<pre><code>let x = 1 &lt; 2\n</code></pre>\n</section>\n"); } LIT.with(|lit| lit.clone()) };
             let mut v287: i32 = if v258 {
                 0i32
             } else {
@@ -1746,7 +2543,7 @@ fn spiral_main() -> i32 {
             let mut v336: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("--dir"); } LIT.with(|lit| lit.clone()) };
             let mut v337: i32 = 1i32;
             let mut v339: i32 = std::env::args().count() as i32;
-            let mut v340: i32 = flag_at_20(v336.clone(), v337, v339);
+            let mut v340: i32 = flag_at_26(v336.clone(), v337, v339);
             let mut v341: bool = v340 == -1i32;
             let mut v347: i32 = if v341 {
                 -1i32
@@ -1763,7 +2560,7 @@ fn spiral_main() -> i32 {
             let mut v348: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("--html"); } LIT.with(|lit| lit.clone()) };
             let mut v349: i32 = 1i32;
             let mut v351: i32 = std::env::args().count() as i32;
-            let mut v352: i32 = flag_at_20(v348.clone(), v349, v351);
+            let mut v352: i32 = flag_at_26(v348.clone(), v349, v351);
             let mut v353: bool = v352 == -1i32;
             let mut v359: i32 = if v353 {
                 -1i32
@@ -1860,7 +2657,7 @@ fn spiral_main() -> i32 {
         let mut v419: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("--dir"); } LIT.with(|lit| lit.clone()) };
         let mut v420: i32 = 1i32;
         let mut v422: i32 = std::env::args().count() as i32;
-        let mut v423: i32 = flag_at_20(v419.clone(), v420, v422);
+        let mut v423: i32 = flag_at_26(v419.clone(), v420, v422);
         let mut v424: bool = v423 == -1i32;
         let mut v430: i32 = if v424 {
             -1i32
@@ -1877,7 +2674,7 @@ fn spiral_main() -> i32 {
         let mut v431: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("--html"); } LIT.with(|lit| lit.clone()) };
         let mut v432: i32 = 1i32;
         let mut v434: i32 = std::env::args().count() as i32;
-        let mut v435: i32 = flag_at_20(v431.clone(), v432, v434);
+        let mut v435: i32 = flag_at_26(v431.clone(), v432, v434);
         let mut v436: bool = v435 == -1i32;
         let mut v442: i32 = if v436 {
             -1i32

@@ -17,7 +17,7 @@ jobs:
 
       - uses: moonrepo/setup-rust@v1.3.0
         with:
-          channel: "nightly-2025-11-01"
+          channel: "nightly-2026-10-18"
 
       - uses: actions/setup-dotnet@v5.4.0
         with:
