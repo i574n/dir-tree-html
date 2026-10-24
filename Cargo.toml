@@ -1,0 +1,21 @@
+cargo-features = ["profile-rustflags"]
+
+[package]
+name = "dir-tree-html"
+version = "0.0.1"
+edition = "2024"
+license-file = "LICENSE"
+repository = "https://github.com/i574n/dir-tree-html"
+
+[[bin]]
+name = "dir-tree-html"
+path = "dir_tree_html.rs"
+
+[profile.release]
+codegen-units = 1
+opt-level = "z"
+lto = true
+debug = false
+panic = "abort"
+overflow-checks = true
+rustflags = ["-C", "link-arg=-s"]
