@@ -1,30 +1,30 @@
-union rec entry =
+:| ^ entry =
     | End
     | File : string * string * i64 * entry
     | Folder : string * string * entry * entry
 
-union rec child =
+:| ^ child =
     | ChildEnd
     | Child : i32 * string * child
 
-nominal root = entry
+:! root = entry
 
-prototype bytes node : node -> i64
-prototype render node : node -> string
+:? bytes node : node -> i64
+:? render node : node -> string
 
-inl (++) (left : string) (right : string) : string = sm.concat left right
-inl (<.) (left : char) (right : char) : bool = !!!!LT(left, right)
+:= (++) (left : string) (right : string) : string = sm.concat left right
+:= (<.) (left : char) (right : char) : bool = !!!!LT(left, right)
 
-inl (~!\\) forall t u. ((args : t), (code : string)) : u =
+:= (~!\\) \* t u. ((args : t), (code : string)) : u =
     $'__spiral_emit_rust !args !code '
 
-inl host_arg_count () : i32 =
+:= host_arg_count () : i32 =
     !\\((), $'"std::env::args().count() as i32"')
 
-inl host_arg (i : i32) : string =
+:= host_arg (i : i32) : string =
     !\\(i, $'"Rc::<str>::from(std::env::args().nth($0 as usize).unwrap_or_default())"')
 
-inl host_listing (path : string) : string =
+:= host_listing (path : string) : string =
     !\\(path, $'"{ let mut out = String::new(); if let Ok(read) = std::fs::read_dir($0.as_ref()) { for entry in \
         read.flatten() { let Ok(kind) = entry.file_type() else { continue }; if kind.is_symlink() { continue }; let \
         child = entry.path(); let Some(name) = child.file_name() else { continue }; let name = \
@@ -33,153 +33,153 @@ inl host_listing (path : string) : string =
         out.push_str(&name.len().to_string()); out.push(char::from(10)); out.push_str(&name); } } \
         Rc::<str>::from(out) }"')
 
-inl host_file_len (path : string) : i64 =
+:= host_file_len (path : string) : i64 =
     !\\(path, $'"std::fs::metadata($0.as_ref()).map(|meta| meta.len() as i64).unwrap_or(0)"')
 
-inl host_join (left : string) (right : string) : string =
+:= host_join (left : string) (right : string) : string =
     !\\((left, right), $'"Rc::<str>::from(std::path::Path::new($0.as_ref()).join($1.as_ref()).display().to_string())"')
 
-inl host_read_text (path : string) : string =
+:= host_read_text (path : string) : string =
     !\\(path, $'"Rc::<str>::from(std::fs::read_to_string($0.as_ref()).map(|text| \
         text.lines().collect::<Vec<_>>().join(&char::from(10).to_string())).unwrap_or_default())"')
 
-inl host_is_file (path : string) : bool =
+:= host_is_file (path : string) : bool =
     !\\(path, $'"std::path::Path::new($0.as_ref()).is_file()"')
 
-inl host_write_file (path : string) (text : string) : i32 =
+:= host_write_file (path : string) (text : string) : i32 =
     !\\((path, text), $'"i32::from(std::fs::write($0.as_ref(), $1.as_ref().as_bytes()).is_err())"')
 
-inl host_mkdir (path : string) : i32 =
+:= host_mkdir (path : string) : i32 =
     !\\(path, $'"i32::from(std::fs::create_dir_all($0.as_ref()).is_err())"')
 
-inl host_temp () : string =
+:= host_temp () : string =
     !\\((), $'"Rc::<str>::from(std::env::temp_dir().display().to_string())"')
 
-inl host_process_id () : i64 =
+:= host_process_id () : i64 =
     !\\((), $'"std::process::id() as i64"')
 
-inl host_unix_nanos () : i64 =
+:= host_unix_nanos () : i64 =
     !\\((), $'"std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos() as i64"')
 
-inl digit (n : i64) : string =
-    if n =. 0i64 then "0"
-    elif n =. 1i64 then "1"
-    elif n =. 2i64 then "2"
-    elif n =. 3i64 then "3"
-    elif n =. 4i64 then "4"
-    elif n =. 5i64 then "5"
-    elif n =. 6i64 then "6"
-    elif n =. 7i64 then "7"
-    elif n =. 8i64 then "8"
-    elif n =. 9i64 then "9"
-    else "0"
+:= digit (n : i64) : string =
+    ? n =. 0i64 ?> "0"
+    |? n =. 1i64 ?> "1"
+    |? n =. 2i64 ?> "2"
+    |? n =. 3i64 ?> "3"
+    |? n =. 4i64 ?> "4"
+    |? n =. 5i64 ?> "5"
+    |? n =. 6i64 ?> "6"
+    |? n =. 7i64 ?> "7"
+    |? n =. 8i64 ?> "8"
+    |? n =. 9i64 ?> "9"
+    |: "0"
 
-let rec show_i64 (n : i64) : string =
-    inl ch = digit (n %. 10i64)
-    inl rest = n /. 10i64
-    if rest =. 0i64 then ch else show_i64 rest ++ ch
+:~ ^ show_i64 (n : i64) : string =
+    := ch = digit (n %. 10i64)
+    := rest = n /. 10i64
+    ? rest =. 0i64 ?> ch |: show_i64 rest ++ ch
 
-inl pad2 (n : i64) : string =
-    inl text = show_i64 n
-    if n < 10i64 then "0" ++ text else text
+:= pad2 (n : i64) : string =
+    := text = show_i64 n
+    ? n < 10i64 ?> "0" ++ text |: text
 
-inl show_hundredths (n : i64) : string =
+:= show_hundredths (n : i64) : string =
     show_i64 (n /. 100i64) ++ "." ++ pad2 (n %. 100i64)
 
-inl scaled (bytes : i64) (scale : i64) : i64 =
+:= scaled (bytes : i64) (scale : i64) : i64 =
     (bytes *. 100i64 +. (scale /. 2i64)) /. scale
 
-inl size_label (bytes : i64) : string =
-    if bytes > 1048576i64 then show_hundredths (scaled bytes 1048576i64) ++ " MB"
-    elif bytes > 1024i64 then show_hundredths (scaled bytes 1024i64) ++ " KB"
-    else show_hundredths (scaled bytes 1i64) ++ " B"
+:= size_label (bytes : i64) : string =
+    ? bytes > 1048576i64 ?> show_hundredths (scaled bytes 1048576i64) ++ " MB"
+    |? bytes > 1024i64 ?> show_hundredths (scaled bytes 1024i64) ++ " KB"
+    |: show_hundredths (scaled bytes 1i64) ++ " B"
 
-inl join_rel (parent : string) (name : string) : string =
-    if (sm.length parent : i32) =. 0i32 then name else parent ++ "/" ++ name
+:= join_rel (parent : string) (name : string) : string =
+    ? (sm.length parent : i32) =. 0i32 ?> name |: parent ++ "/" ++ name
 
-inl digit_value ch : i32 =
-    if ch =. (sm.index "0" 0i32) then 0i32
-    elif ch =. (sm.index "1" 0i32) then 1i32
-    elif ch =. (sm.index "2" 0i32) then 2i32
-    elif ch =. (sm.index "3" 0i32) then 3i32
-    elif ch =. (sm.index "4" 0i32) then 4i32
-    elif ch =. (sm.index "5" 0i32) then 5i32
-    elif ch =. (sm.index "6" 0i32) then 6i32
-    elif ch =. (sm.index "7" 0i32) then 7i32
-    elif ch =. (sm.index "8" 0i32) then 8i32
-    elif ch =. (sm.index "9" 0i32) then 9i32
-    else 0i32
+:= digit_value ch : i32 =
+    ? ch =. (sm.index "0" 0i32) ?> 0i32
+    |? ch =. (sm.index "1" 0i32) ?> 1i32
+    |? ch =. (sm.index "2" 0i32) ?> 2i32
+    |? ch =. (sm.index "3" 0i32) ?> 3i32
+    |? ch =. (sm.index "4" 0i32) ?> 4i32
+    |? ch =. (sm.index "5" 0i32) ?> 5i32
+    |? ch =. (sm.index "6" 0i32) ?> 6i32
+    |? ch =. (sm.index "7" 0i32) ?> 7i32
+    |? ch =. (sm.index "8" 0i32) ?> 8i32
+    |? ch =. (sm.index "9" 0i32) ?> 9i32
+    |: 0i32
 
-let rec find_nl (text : string) (at : i32) : i32 =
-    if at =. (sm.length text : i32) then at
-    elif (sm.index text at) =. (sm.index "\n" 0i32) then at
-    else find_nl text (at +. 1i32)
+:~ ^ find_nl (text : string) (at : i32) : i32 =
+    ? at =. (sm.length text : i32) ?> at
+    |? (sm.index text at) =. (sm.index "\n" 0i32) ?> at
+    |: find_nl text (at +. 1i32)
 
-let rec parse_digits (text : string) (at : i32) (stop : i32) (acc : i32) : i32 =
-    if at =. stop then acc
-    else parse_digits text (at +. 1i32) stop (acc *. 10i32 +. digit_value (sm.index text at))
+:~ ^ parse_digits (text : string) (at : i32) (stop : i32) (acc : i32) : i32 =
+    ? at =. stop ?> acc
+    |: parse_digits text (at +. 1i32) stop (acc *. 10i32 +. digit_value (sm.index text at))
 
-let rec parse (listing : string) (at : i32) : child =
-    if at =. (sm.length listing : i32) then ChildEnd
-    else
-        inl nl_at = find_nl listing (at +. 2i32)
-        inl nbytes = parse_digits listing (at +. 2i32) nl_at 0i32
-        inl name_from = nl_at +. 1i32
-        inl name = sm.slice listing { from = name_from; to = name_from +. nbytes -. 1i32 }
-        inl flag = if (sm.index listing at) =. (sm.index "1" 0i32) then 1i32 else 0i32
+:~ ^ parse (listing : string) (at : i32) : child =
+    ? at =. (sm.length listing : i32) ?> ChildEnd
+    |:
+        := nl_at = find_nl listing (at +. 2i32)
+        := nbytes = parse_digits listing (at +. 2i32) nl_at 0i32
+        := name_from = nl_at +. 1i32
+        := name = sm.slice listing { from = name_from; to = name_from +. nbytes -. 1i32 }
+        := flag = ? (sm.index listing at) =. (sm.index "1" 0i32) ?> 1i32 |: 0i32
         Child (flag, name, parse listing (name_from +. nbytes))
 
-let rec cmp_at (left : string) (right : string) (at : i32) : i32 =
-    inl left_len = sm.length left : i32
-    inl right_len = sm.length right : i32
-    if at =. left_len && at =. right_len then 0i32
-    elif at =. left_len then -1i32
-    elif at =. right_len then 1i32
-    else
-        inl left_ch = sm.index left at
-        inl right_ch = sm.index right at
-        if left_ch =. right_ch then cmp_at left right (at +. 1i32)
-        elif left_ch <. right_ch then -1i32
-        else 1i32
+:~ ^ cmp_at (left : string) (right : string) (at : i32) : i32 =
+    := left_len = sm.length left : i32
+    := right_len = sm.length right : i32
+    ? at =. left_len && at =. right_len ?> 0i32
+    |? at =. left_len ?> -1i32
+    |? at =. right_len ?> 1i32
+    |:
+        := left_ch = sm.index left at
+        := right_ch = sm.index right at
+        ? left_ch =. right_ch ?> cmp_at left right (at +. 1i32)
+        |? left_ch <. right_ch ?> -1i32
+        |: 1i32
 
-inl name_before (left : string) (right : string) : bool =
+:= name_before (left : string) (right : string) : bool =
     (cmp_at left right 0i32) < 0i32
 
-inl child_before (left_dir : i32) (left_name : string) (right_dir : i32) (right_name : string) : bool =
-    if left_dir =. right_dir then name_before left_name right_name else left_dir > right_dir
+:= child_before (left_dir : i32) (left_name : string) (right_dir : i32) (right_name : string) : bool =
+    ? left_dir =. right_dir ?> name_before left_name right_name |: left_dir > right_dir
 
-let rec insert (is_dir : i32) (name : string) (rest : child) : child =
-    match rest with
+:~ ^ insert (is_dir : i32) (name : string) (rest : child) : child =
+    ?= rest ?|
     | ChildEnd => Child (is_dir, name, ChildEnd)
     | Child (other_dir, other_name, more) =>
-        if child_before is_dir name other_dir other_name then Child (is_dir, name, rest)
-        else Child (other_dir, other_name, insert is_dir name more)
+        ? child_before is_dir name other_dir other_name ?> Child (is_dir, name, rest)
+        |: Child (other_dir, other_name, insert is_dir name more)
 
-let rec sort (items : child) : child =
-    match items with
+:~ ^ sort (items : child) : child =
+    ?= items ?|
     | ChildEnd => ChildEnd
     | Child (is_dir, name, more) => insert is_dir name (sort more)
 
-inl anchor (icon : string) (href : string) (text : string) (size : i64) : string =
-    inl q = "\""
+:= anchor (icon : string) (href : string) (text : string) (size : i64) : string =
+    := q = "\""
     icon ++ " <a href=" ++ q ++ href ++ q ++ ">" ++ text ++ "</a><span> (" ++ size_label size ++ ")</span>"
 
-let rec folder_bytes (item : entry) : i64 =
-    match item with
+:~ ^ folder_bytes (item : entry) : i64 =
+    ?= item ?|
     | End => 0i64
     | File (_, _, size, next) => size +. folder_bytes next
     | Folder (_, _, children, next) => folder_bytes children +. folder_bytes next
 
-instance bytes entry = fun item => folder_bytes item
-instance bytes root = fun (root items) => bytes items
+:+ bytes entry = \ item => folder_bytes item
+:+ bytes root = \ (root items) => bytes items
 
-let rec html_chain (item : entry) : string =
-    match item with
+:~ ^ html_chain (item : entry) : string =
+    ?= item ?|
     | End => ""
     | File (name, parent, size, next) =>
         "<div>" ++ anchor "&#128196;" (join_rel parent name) name size ++ "</div>" ++ html_chain next
     | Folder (name, rel, children, next) =>
-        inl q = "\""
+        := q = "\""
         "<details open=" ++ q ++ "true" ++ q ++ "><summary>" ++ anchor "&#128194;" rel name (bytes children) ++ "</summary><div>" ++ html_chain children ++ "</div></details>" ++ html_chain next
 
 inl doc_head () : string = """
@@ -246,84 +246,84 @@ inl doc_head () : string = """
     <body>
       <div>
     """
-inl doc_close (readme : string) : string = "</div>\n" ++ readme ++ "</body>\n</html>\n"
+:= doc_close (readme : string) : string = "</div>\n" ++ readme ++ "</body>\n</html>\n"
 
-inl copied_run (text : string) (run_start : i32) (stop : i32) : string =
-    if run_start =. stop then "" else sm.slice text { from = run_start; to = stop -. 1i32 }
+:= copied_run (text : string) (run_start : i32) (stop : i32) : string =
+    ? run_start =. stop ?> "" |: sm.slice text { from = run_start; to = stop -. 1i32 }
 
-let rec escape_from (text : string) (i : i32) (run_start : i32) (acc : string) : string =
-    if i =. (sm.length text : i32) then acc ++ copied_run text run_start i
-    else
-        inl ch = sm.index text i
-        inl entity =
-            if ch =. (sm.index "&" 0i32) then "&amp;"
-            elif ch =. (sm.index "<" 0i32) then "&lt;"
-            elif ch =. (sm.index ">" 0i32) then "&gt;"
-            elif ch =. (sm.index "\"" 0i32) then "&quot;"
-            else ""
-        if entity =. "" then escape_from text (i +. 1i32) run_start acc
-        else escape_from text (i +. 1i32) (i +. 1i32) (acc ++ copied_run text run_start i ++ entity)
+:~ ^ escape_from (text : string) (i : i32) (run_start : i32) (acc : string) : string =
+    ? i =. (sm.length text : i32) ?> acc ++ copied_run text run_start i
+    |:
+        := ch = sm.index text i
+        := entity =
+            ? ch =. (sm.index "&" 0i32) ?> "&amp;"
+            |? ch =. (sm.index "<" 0i32) ?> "&lt;"
+            |? ch =. (sm.index ">" 0i32) ?> "&gt;"
+            |? ch =. (sm.index "\"" 0i32) ?> "&quot;"
+            |: ""
+        ? entity =. "" ?> escape_from text (i +. 1i32) run_start acc
+        |: escape_from text (i +. 1i32) (i +. 1i32) (acc ++ copied_run text run_start i ++ entity)
 
-inl escape (text : string) : string = escape_from text 0i32 0i32 ""
+:= escape (text : string) : string = escape_from text 0i32 0i32 ""
 
-let rec find_char_from (text : string) (ch : char) (i : i32) : i32 =
-    if i =. (sm.length text : i32) then -1i32
-    elif (sm.index text i) =. ch then i
-    else find_char_from text ch (i +. 1i32)
+:~ ^ find_char_from (text : string) (ch : char) (i : i32) : i32 =
+    ? i =. (sm.length text : i32) ?> -1i32
+    |? (sm.index text i) =. ch ?> i
+    |: find_char_from text ch (i +. 1i32)
 
-let rec next_inline_marker_from (text : string) (i : i32) : i32 =
-    if i =. (sm.length text : i32) then i
-    elif (sm.index text i) =. (sm.index "`" 0i32) then i
-    elif (sm.index text i) =. (sm.index "[" 0i32) then i
-    elif (sm.index text i) =. (sm.index "!" 0i32) then i
-    elif (sm.index text i) =. (sm.index "*" 0i32) then i
-    elif (sm.index text i) =. (sm.index "<" 0i32) then i
-    elif (sm.index text i) =. (sm.index "\\" 0i32) then i
-    else next_inline_marker_from text (i +. 1i32)
+:~ ^ next_inline_marker_from (text : string) (i : i32) : i32 =
+    ? i =. (sm.length text : i32) ?> i
+    |? (sm.index text i) =. (sm.index "`" 0i32) ?> i
+    |? (sm.index text i) =. (sm.index "[" 0i32) ?> i
+    |? (sm.index text i) =. (sm.index "!" 0i32) ?> i
+    |? (sm.index text i) =. (sm.index "*" 0i32) ?> i
+    |? (sm.index text i) =. (sm.index "<" 0i32) ?> i
+    |? (sm.index text i) =. (sm.index "\\" 0i32) ?> i
+    |: next_inline_marker_from text (i +. 1i32)
 
-let rec double_close (text : string) (i : i32) : i32 =
-    inl n = sm.length text : i32
-    if i =. n then -1i32
-    elif (i +. 1i32) =. n then -1i32
-    elif (sm.index text i) =. (sm.index "*" 0i32) then
-        if (sm.index text (i +. 1i32)) =. (sm.index "*" 0i32) then i else double_close text (i +. 1i32)
-    else double_close text (i +. 1i32)
+:~ ^ double_close (text : string) (i : i32) : i32 =
+    := n = sm.length text : i32
+    ? i =. n ?> -1i32
+    |? (i +. 1i32) =. n ?> -1i32
+    |? (sm.index text i) =. (sm.index "*" 0i32) ?>
+        ? (sm.index text (i +. 1i32)) =. (sm.index "*" 0i32) ?> i |: double_close text (i +. 1i32)
+    |: double_close text (i +. 1i32)
 
-inl escapable (ch : char) : bool =
-    if ch =. (sm.index "*" 0i32) then true
-    elif ch =. (sm.index "_" 0i32) then true
-    elif ch =. (sm.index "\\" 0i32) then true
-    elif ch =. (sm.index "`" 0i32) then true
-    elif ch =. (sm.index "[" 0i32) then true
-    elif ch =. (sm.index "]" 0i32) then true
-    elif ch =. (sm.index "#" 0i32) then true
-    elif ch =. (sm.index "-" 0i32) then true
-    elif ch =. (sm.index "!" 0i32) then true
-    elif ch =. (sm.index "<" 0i32) then true
-    else false
+:= escapable (ch : char) : bool =
+    ? ch =. (sm.index "*" 0i32) ?> !+
+    |? ch =. (sm.index "_" 0i32) ?> !+
+    |? ch =. (sm.index "\\" 0i32) ?> !+
+    |? ch =. (sm.index "`" 0i32) ?> !+
+    |? ch =. (sm.index "[" 0i32) ?> !+
+    |? ch =. (sm.index "]" 0i32) ?> !+
+    |? ch =. (sm.index "#" 0i32) ?> !+
+    |? ch =. (sm.index "-" 0i32) ?> !+
+    |? ch =. (sm.index "!" 0i32) ?> !+
+    |? ch =. (sm.index "<" 0i32) ?> !+
+    |: !-
 
-let image_close (text : string) (i : i32) : i32 =
-    inl n = sm.length text : i32
-    if (sm.index text i) =. (sm.index "!" 0i32)
-    then
-        if (i +. 1i32) =. n
-        then -1i32
-        elif (sm.index text (i +. 1i32)) =. (sm.index "[" 0i32)
-        then
-            inl mid = find_char_from text (sm.index "]" 0i32) (i +. 2i32)
-            if mid =. -1i32
-            then -1i32
-            elif (mid +. 1i32) =. n
-            then -1i32
-            elif (sm.index text (mid +. 1i32)) =. (sm.index "(" 0i32)
-            then find_char_from text (sm.index ")" 0i32) (mid +. 2i32)
-            else -1i32
-        else -1i32
-    else -1i32
+:~ image_close (text : string) (i : i32) : i32 =
+    := n = sm.length text : i32
+    ? (sm.index text i) =. (sm.index "!" 0i32)
+    ?>
+        ? (i +. 1i32) =. n
+        ?> -1i32
+        |? (sm.index text (i +. 1i32)) =. (sm.index "[" 0i32)
+        ?>
+            := mid = find_char_from text (sm.index "]" 0i32) (i +. 2i32)
+            ? mid =. -1i32
+            ?> -1i32
+            |? (mid +. 1i32) =. n
+            ?> -1i32
+            |? (sm.index text (mid +. 1i32)) =. (sm.index "(" 0i32)
+            ?> find_char_from text (sm.index ")" 0i32) (mid +. 2i32)
+            |: -1i32
+        |: -1i32
+    |: -1i32
 
-inl render_image (text : string) (i : i32) (close : i32) : string =
-    inl mid = find_char_from text (sm.index "]" 0i32) (i +. 2i32)
-    inl q = "\""
+:= render_image (text : string) (i : i32) (close : i32) : string =
+    := mid = find_char_from text (sm.index "]" 0i32) (i +. 2i32)
+    := q = "\""
     "<img src="
     ++ q
     ++ escape (copied_run text (mid +. 2i32) close)
@@ -334,115 +334,115 @@ inl render_image (text : string) (i : i32) (close : i32) : string =
     ++ q
     ++ ">"
 
-let badge_close (text : string) (i : i32) : i32 =
-    inl n = sm.length text : i32
-    if (sm.index text i) =. (sm.index "[" 0i32)
-    then
-        if (i +. 1i32) =. n
-        then -1i32
-        else
-            inl inner = image_close text (i +. 1i32)
-            if inner =. -1i32
-            then -1i32
-            elif (inner +. 1i32) =. n
-            then -1i32
-            elif (sm.index text (inner +. 1i32)) =. (sm.index "]" 0i32)
-            then
-                if (inner +. 2i32) =. n
-                then -1i32
-                elif (sm.index text (inner +. 2i32)) =. (sm.index "(" 0i32)
-                then find_char_from text (sm.index ")" 0i32) (inner +. 3i32)
-                else -1i32
-            else -1i32
-    else -1i32
+:~ badge_close (text : string) (i : i32) : i32 =
+    := n = sm.length text : i32
+    ? (sm.index text i) =. (sm.index "[" 0i32)
+    ?>
+        ? (i +. 1i32) =. n
+        ?> -1i32
+        |:
+            := inner = image_close text (i +. 1i32)
+            ? inner =. -1i32
+            ?> -1i32
+            |? (inner +. 1i32) =. n
+            ?> -1i32
+            |? (sm.index text (inner +. 1i32)) =. (sm.index "]" 0i32)
+            ?>
+                ? (inner +. 2i32) =. n
+                ?> -1i32
+                |? (sm.index text (inner +. 2i32)) =. (sm.index "(" 0i32)
+                ?> find_char_from text (sm.index ")" 0i32) (inner +. 3i32)
+                |: -1i32
+            |: -1i32
+    |: -1i32
 
-let rec inline_from (text : string) (i : i32) (acc : string) : string =
-    inl n = sm.length text : i32
-    if i =. n
-    then acc
-    else
-        inl ch = sm.index text i
-        inl plain () =
-            inl stop = next_inline_marker_from text (i +. 1i32)
+:~ ^ inline_from (text : string) (i : i32) (acc : string) : string =
+    := n = sm.length text : i32
+    ? i =. n
+    ?> acc
+    |:
+        := ch = sm.index text i
+        := plain () =
+            := stop = next_inline_marker_from text (i +. 1i32)
             inline_from text stop (acc ++ escape (copied_run text i stop))
-        if ch =. (sm.index "`" 0i32)
-        then
-            inl close = find_char_from text ch (i +. 1i32)
-            if close =. -1i32
-            then plain ()
-            else
+        ? ch =. (sm.index "`" 0i32)
+        ?>
+            := close = find_char_from text ch (i +. 1i32)
+            ? close =. -1i32
+            ?> plain ()
+            |:
                 inline_from text
                     (close +. 1i32)
                     (acc ++ "<code>" ++ escape (sm.slice text { from = i +. 1i32; to = close -. 1i32 }) ++ "</code>")
-        elif ch =. (sm.index "\\" 0i32)
-        then
-            if (i +. 1i32) =. n
-            then plain ()
-            elif escapable (sm.index text (i +. 1i32))
-            then inline_from text (i +. 2i32) (acc ++ escape (copied_run text (i +. 1i32) (i +. 2i32)))
-            else plain ()
-        elif ch =. (sm.index "*" 0i32)
-        then
-            if (i +. 1i32) =. n
-            then plain ()
-            elif (sm.index text (i +. 1i32)) =. (sm.index "*" 0i32)
-            then
-                inl close = double_close text (i +. 2i32)
-                if close =. -1i32
-                then plain ()
-                else
+        |? ch =. (sm.index "\\" 0i32)
+        ?>
+            ? (i +. 1i32) =. n
+            ?> plain ()
+            |? escapable (sm.index text (i +. 1i32))
+            ?> inline_from text (i +. 2i32) (acc ++ escape (copied_run text (i +. 1i32) (i +. 2i32)))
+            |: plain ()
+        |? ch =. (sm.index "*" 0i32)
+        ?>
+            ? (i +. 1i32) =. n
+            ?> plain ()
+            |? (sm.index text (i +. 1i32)) =. (sm.index "*" 0i32)
+            ?>
+                := close = double_close text (i +. 2i32)
+                ? close =. -1i32
+                ?> plain ()
+                |:
                     inline_from text
                         (close +. 2i32)
                         (acc ++ "<strong>" ++ inline_from (copied_run text (i +. 2i32) close) 0i32 "" ++ "</strong>")
-            else plain ()
-        elif ch =. (sm.index "<" 0i32)
-        then
-            inl close = find_char_from text (sm.index ">" 0i32) (i +. 1i32)
-            if close =. -1i32
-            then plain ()
-            elif close > (i +. 5i32)
-            then
-                inl url = copied_run text (i +. 1i32) close
-                if (copied_run url 0i32 4i32) =. "http"
-                then
-                    inl q = "\""
+            |: plain ()
+        |? ch =. (sm.index "<" 0i32)
+        ?>
+            := close = find_char_from text (sm.index ">" 0i32) (i +. 1i32)
+            ? close =. -1i32
+            ?> plain ()
+            |? close > (i +. 5i32)
+            ?>
+                := url = copied_run text (i +. 1i32) close
+                ? (copied_run url 0i32 4i32) =. "http"
+                ?>
+                    := q = "\""
                     inline_from text
                         (close +. 1i32)
                         (acc ++ "<a href=" ++ q ++ escape url ++ q ++ ">" ++ escape url ++ "</a>")
-                else plain ()
-            else plain ()
-        elif ch =. (sm.index "!" 0i32)
-        then
-            inl close = image_close text i
-            if close =. -1i32 then plain ()
-            else inline_from text (close +. 1i32) (acc ++ render_image text i close)
-        elif (badge_close text i) =. -1i32
-        then
-            if ch =. (sm.index "[" 0i32)
-            then
-                inl mid = find_char_from text (sm.index "]" 0i32) (i +. 1i32)
-                if mid =. -1i32
-                then plain ()
-                elif (mid +. 1i32) =. n
-                then plain ()
-                elif (sm.index text (mid +. 1i32)) =. (sm.index "(" 0i32)
-                then
-                    inl close = find_char_from text (sm.index ")" 0i32) (mid +. 2i32)
-                    if close =. -1i32
-                    then plain ()
-                    else
-                        inl q = "\""
-                        inl label = sm.slice text { from = i +. 1i32; to = mid -. 1i32 }
-                        inl href = sm.slice text { from = mid +. 2i32; to = close -. 1i32 }
+                |: plain ()
+            |: plain ()
+        |? ch =. (sm.index "!" 0i32)
+        ?>
+            := close = image_close text i
+            ? close =. -1i32 ?> plain ()
+            |: inline_from text (close +. 1i32) (acc ++ render_image text i close)
+        |? (badge_close text i) =. -1i32
+        ?>
+            ? ch =. (sm.index "[" 0i32)
+            ?>
+                := mid = find_char_from text (sm.index "]" 0i32) (i +. 1i32)
+                ? mid =. -1i32
+                ?> plain ()
+                |? (mid +. 1i32) =. n
+                ?> plain ()
+                |? (sm.index text (mid +. 1i32)) =. (sm.index "(" 0i32)
+                ?>
+                    := close = find_char_from text (sm.index ")" 0i32) (mid +. 2i32)
+                    ? close =. -1i32
+                    ?> plain ()
+                    |:
+                        := q = "\""
+                        := label = sm.slice text { from = i +. 1i32; to = mid -. 1i32 }
+                        := href = sm.slice text { from = mid +. 2i32; to = close -. 1i32 }
                         inline_from text
                             (close +. 1i32)
                             (acc ++ "<a href=" ++ q ++ escape href ++ q ++ ">" ++ escape label ++ "</a>")
-                else plain ()
-            else plain ()
-        else
-            inl close = badge_close text i
-            inl inner = image_close text (i +. 1i32)
-            inl q = "\""
+                |: plain ()
+            |: plain ()
+        |:
+            := close = badge_close text i
+            := inner = image_close text (i +. 1i32)
+            := q = "\""
             inline_from text
                 (close +. 1i32)
                 (
@@ -456,205 +456,205 @@ let rec inline_from (text : string) (i : i32) (acc : string) : string =
                     ++ "</a>"
                 )
 
-inl render_inline (text : string) : string = inline_from text 0i32 ""
+:= render_inline (text : string) : string = inline_from text 0i32 ""
 
-let rec starts_at (line : string) (prefix : string) (i : i32) : bool =
-    if i =. (sm.length prefix : i32) then true
-    elif i =. (sm.length line : i32) then false
-    elif (sm.index line i) =. (sm.index prefix i) then starts_at line prefix (i +. 1i32)
-    else false
+:~ ^ starts_at (line : string) (prefix : string) (i : i32) : bool =
+    ? i =. (sm.length prefix : i32) ?> !+
+    |? i =. (sm.length line : i32) ?> !-
+    |? (sm.index line i) =. (sm.index prefix i) ?> starts_at line prefix (i +. 1i32)
+    |: !-
 
-inl starts (line : string) (prefix : string) : bool = starts_at line prefix 0i32
+:= starts (line : string) (prefix : string) : bool = starts_at line prefix 0i32
 
-let rec blank_from (line : string) (i : i32) : bool =
-    if i =. (sm.length line : i32) then true
-    elif (sm.index line i) =. (sm.index " " 0i32) then blank_from line (i +. 1i32)
-    else false
+:~ ^ blank_from (line : string) (i : i32) : bool =
+    ? i =. (sm.length line : i32) ?> !+
+    |? (sm.index line i) =. (sm.index " " 0i32) ?> blank_from line (i +. 1i32)
+    |: !-
 
-let rec count_hashes (line : string) (i : i32) : i32 =
-    if i =. (sm.length line : i32) then i
-    elif (sm.index line i) =. (sm.index "#" 0i32) then count_hashes line (i +. 1i32)
-    else i
+:~ ^ count_hashes (line : string) (i : i32) : i32 =
+    ? i =. (sm.length line : i32) ?> i
+    |? (sm.index line i) =. (sm.index "#" 0i32) ?> count_hashes line (i +. 1i32)
+    |: i
 
-inl heading_level (line : string) : i32 =
-    inl hashes = count_hashes line 0i32
-    if hashes =. 0i32 then 0i32
-    elif hashes > 6i32 then 0i32
-    elif hashes =. (sm.length line : i32) then 0i32
-    elif (sm.index line hashes) =. (sm.index " " 0i32) then hashes
-    else 0i32
+:= heading_level (line : string) : i32 =
+    := hashes = count_hashes line 0i32
+    ? hashes =. 0i32 ?> 0i32
+    |? hashes > 6i32 ?> 0i32
+    |? hashes =. (sm.length line : i32) ?> 0i32
+    |? (sm.index line hashes) =. (sm.index " " 0i32) ?> hashes
+    |: 0i32
 
-let rec lead_spaces (line : string) (i : i32) : i32 =
-    if i =. (sm.length line : i32) then i
-    elif (sm.index line i) =. (sm.index " " 0i32) then lead_spaces line (i +. 1i32)
-    else i
+:~ ^ lead_spaces (line : string) (i : i32) : i32 =
+    ? i =. (sm.length line : i32) ?> i
+    |? (sm.index line i) =. (sm.index " " 0i32) ?> lead_spaces line (i +. 1i32)
+    |: i
 
-inl bullet_start (line : string) : i32 =
-    inl lead = lead_spaces line 0i32
-    if (lead +. 2i32) > (sm.length line : i32) then -1i32
-    elif (sm.index line (lead +. 1i32)) =. (sm.index " " 0i32) then
-        if (sm.index line lead) =. (sm.index "-" 0i32) then lead +. 2i32
-        elif (sm.index line lead) =. (sm.index "*" 0i32) then lead +. 2i32
-        else -1i32
-    else -1i32
+:= bullet_start (line : string) : i32 =
+    := lead = lead_spaces line 0i32
+    ? (lead +. 2i32) > (sm.length line : i32) ?> -1i32
+    |? (sm.index line (lead +. 1i32)) =. (sm.index " " 0i32) ?>
+        ? (sm.index line lead) =. (sm.index "-" 0i32) ?> lead +. 2i32
+        |? (sm.index line lead) =. (sm.index "*" 0i32) ?> lead +. 2i32
+        |: -1i32
+    |: -1i32
 
-union md_block =
+:| md_block =
     | MdNone
     | MdParagraph
     | MdList
     | MdCode
 
-inl close_block (block : md_block) : string =
-    match block with
+:= close_block (block : md_block) : string =
+    ?= block ?|
     | MdNone => ""
     | MdParagraph => "</p>\n"
     | MdList => "</ul>\n"
     | MdCode => "</code></pre>\n"
 
-let rec markdown_lines (text : string) (at : i32) (block : md_block) (acc : string) : string =
-    inl n = sm.length text : i32
-    if at > n
-    then acc ++ close_block block
-    else
-        inl nl = find_nl text at
-        inl line = sm.slice text { from = at; to = nl -. 1i32 }
-        inl next = nl +. 1i32
-        match block with
+:~ ^ markdown_lines (text : string) (at : i32) (block : md_block) (acc : string) : string =
+    := n = sm.length text : i32
+    ? at > n
+    ?> acc ++ close_block block
+    |:
+        := nl = find_nl text at
+        := line = sm.slice text { from = at; to = nl -. 1i32 }
+        := next = nl +. 1i32
+        ?= block ?|
         | MdCode =>
-            if starts line "```" then markdown_lines text next MdNone (acc ++ "</code></pre>\n")
-            else markdown_lines text next MdCode (acc ++ escape line ++ "\n")
+            ? starts line "```" ?> markdown_lines text next MdNone (acc ++ "</code></pre>\n")
+            |: markdown_lines text next MdCode (acc ++ escape line ++ "\n")
         | _ =>
-            inl level = heading_level line
-            if starts line "```"
-            then markdown_lines text next MdCode (acc ++ close_block block ++ "<pre><code>")
-            elif blank_from line 0i32
-            then markdown_lines text next MdNone (acc ++ close_block block)
-            elif level > 0i32
-            then
-                inl tag =
-                    if level =. 1i32 then "h1"
-                    elif level =. 2i32 then "h2"
-                    elif level =. 3i32 then "h3"
-                    elif level =. 4i32 then "h4"
-                    elif level =. 5i32 then "h5"
-                    else "h6"
-                inl title = sm.slice line { from = level +. 1i32; to = (sm.length line : i32) -. 1i32 }
+            := level = heading_level line
+            ? starts line "```"
+            ?> markdown_lines text next MdCode (acc ++ close_block block ++ "<pre><code>")
+            |? blank_from line 0i32
+            ?> markdown_lines text next MdNone (acc ++ close_block block)
+            |? level > 0i32
+            ?>
+                := tag =
+                    ? level =. 1i32 ?> "h1"
+                    |? level =. 2i32 ?> "h2"
+                    |? level =. 3i32 ?> "h3"
+                    |? level =. 4i32 ?> "h4"
+                    |? level =. 5i32 ?> "h5"
+                    |: "h6"
+                := title = sm.slice line { from = level +. 1i32; to = (sm.length line : i32) -. 1i32 }
                 markdown_lines text next MdNone (
                     acc ++ close_block block ++ "<" ++ tag ++ ">" ++ render_inline title ++ "</" ++ tag ++ ">\n"
                 )
-            elif line =. "---"
-            then markdown_lines text next MdNone (acc ++ close_block block ++ "<hr>\n")
-            elif (bullet_start line) > 0i32
-            then
-                inl item =
+            |? line =. "---"
+            ?> markdown_lines text next MdNone (acc ++ close_block block ++ "<hr>\n")
+            |? (bullet_start line) > 0i32
+            ?>
+                := item =
                     "<li>" ++ render_inline (copied_run line (bullet_start line) (sm.length line : i32)) ++ "</li>\n"
-                match block with
+                ?= block ?|
                 | MdList => markdown_lines text next MdList (acc ++ item)
                 | _ => markdown_lines text next MdList (acc ++ close_block block ++ "<ul>\n" ++ item)
-            else
-                match block with
+            |:
+                ?= block ?|
                 | MdParagraph => markdown_lines text next MdParagraph (acc ++ " " ++ render_inline line)
                 | _ => markdown_lines text next MdParagraph (acc ++ close_block block ++ "<p>" ++ render_inline line)
 
-inl readme_html (dir : string) : string =
-    inl path = host_join dir "README.md"
-    if host_is_file path
-    then "<section class=\"readme\">\n" ++ markdown_lines (host_read_text path) 0i32 MdNone "" ++ "</section>\n"
-    else ""
+:= readme_html (dir : string) : string =
+    := path = host_join dir "README.md"
+    ? host_is_file path
+    ?> "<section class=\"readme\">\n" ++ markdown_lines (host_read_text path) 0i32 MdNone "" ++ "</section>\n"
+    |: ""
 
-instance render entry = fun item => html_chain item
-instance render root = fun (root items) => render items
+:+ render entry = \ item => html_chain item
+:+ render root = \ (root items) => render items
 
-inl page (tree : root) (readme : string) : string = doc_head () ++ render tree ++ doc_close readme
+:= page (tree : root) (readme : string) : string = doc_head () ++ render tree ++ doc_close readme
 
-let rec chain (path : string) (rel : string) (items : child) : entry =
-    match items with
+:~ ^ chain (path : string) (rel : string) (items : child) : entry =
+    ?= items ?|
     | ChildEnd => End
     | Child (is_dir, name, more) =>
-        inl next = chain path rel more
-        if is_dir =. 1i32 then
-            inl child_path = host_join path name
-            inl child_rel = join_rel rel name
-            inl nested = chain child_path child_rel (sort (parse (host_listing child_path) 0i32))
+        := next = chain path rel more
+        ? is_dir =. 1i32 ?>
+            := child_path = host_join path name
+            := child_rel = join_rel rel name
+            := nested = chain child_path child_rel (sort (parse (host_listing child_path) 0i32))
             Folder (name, child_rel, nested, next)
-        else
+        |:
             File (name, rel, host_file_len (host_join path name), next)
 
-inl read_tree (dir : string) : root =
+:= read_tree (dir : string) : root =
     root (chain dir "" (sort (parse (host_listing dir) 0i32)))
 
-let rec flag_at (name : string) (index : i32) (count : i32) : i32 =
-    if index =. count then -1i32
-    elif (host_arg index) =. name then index
-    else flag_at name (index +. 1i32) count
+:~ ^ flag_at (name : string) (index : i32) (count : i32) : i32 =
+    ? index =. count ?> -1i32
+    |? (host_arg index) =. name ?> index
+    |: flag_at name (index +. 1i32) count
 
-inl argument (name : string) : i32 =
-    inl found = flag_at name 1i32 (host_arg_count ())
-    if found =. -1i32 then -1i32
-    elif (found +. 1i32) < (host_arg_count ()) then found +. 1i32
-    else -1i32
+:= argument (name : string) : i32 =
+    := found = flag_at name 1i32 (host_arg_count ())
+    ? found =. -1i32 ?> -1i32
+    |? (found +. 1i32) < (host_arg_count ()) ?> found +. 1i32
+    |: -1i32
 
-let rec last_sep (text : string) (at : i32) (found : i32) : i32 =
-    if at =. (sm.length text : i32) then found
-    else
-        inl ch = sm.index text at
-        inl next =
-            if ch =. (sm.index "/" 0i32) then at
-            elif ch =. (sm.index "\\" 0i32) then at
-            else found
+:~ ^ last_sep (text : string) (at : i32) (found : i32) : i32 =
+    ? at =. (sm.length text : i32) ?> found
+    |:
+        := ch = sm.index text at
+        := next =
+            ? ch =. (sm.index "/" 0i32) ?> at
+            |? ch =. (sm.index "\\" 0i32) ?> at
+            |: found
         last_sep text (at +. 1i32) next
 
-inl parent_text (path : string) : string =
-    inl sep = last_sep path 0i32 -1i32
-    if sep =. -1i32 then ""
-    else
-        inl parent = sm.slice path { from = 0i32; to = sep -. 1i32 }
-        if (sm.length parent : i32) =. 2i32 && (sm.index parent 1i32) =. (sm.index ":" 0i32) then
+:= parent_text (path : string) : string =
+    := sep = last_sep path 0i32 -1i32
+    ? sep =. -1i32 ?> ""
+    |:
+        := parent = sm.slice path { from = 0i32; to = sep -. 1i32 }
+        ? (sm.length parent : i32) =. 2i32 && (sm.index parent 1i32) =. (sm.index ":" 0i32) ?>
             sm.slice path { from = 0i32; to = sep }
-        else parent
+        |: parent
 
-inl host_write (path : string) (text : string) : i32 =
-    inl parent = parent_text path
-    inl made = if (sm.length parent : i32) =. 0i32 then 0i32 else host_mkdir parent
-    if made =. 0i32 then host_write_file path text else made
+:= host_write (path : string) (text : string) : i32 =
+    := parent = parent_text path
+    := made = ? (sm.length parent : i32) =. 0i32 ?> 0i32 |: host_mkdir parent
+    ? made =. 0i32 ?> host_write_file path text |: made
 
-let rec times (piece : string) (n : i64) : string =
-    if n <= 0i64 then "" else piece ++ times piece (n -. 1i64)
+:~ ^ times (piece : string) (n : i64) : string =
+    ? n <= 0i64 ?> "" |: piece ++ times piece (n -. 1i64)
 
-let rec lay (dir : string) (n : i64) : i32 =
-    if n < 0i64 then 0i32
-    else
-        inl _ = host_mkdir dir
-        inl mark = digit n
-        inl _ = host_write (host_join dir "file.txt") (times mark (n +. 1i64))
+:~ ^ lay (dir : string) (n : i64) : i32 =
+    ? n < 0i64 ?> 0i32
+    |:
+        := _ = host_mkdir dir
+        := mark = digit n
+        := _ = host_write (host_join dir "file.txt") (times mark (n +. 1i64))
         lay (host_join dir mark) (n -. 1i64)
 
-inl host_unique () : string =
+:= host_unique () : string =
     show_i64 (host_process_id ()) ++ "-" ++ show_i64 (host_unix_nanos ())
 
-inl fresh () : string =
+:= fresh () : string =
     host_join (host_temp ()) (host_unique ())
 
-inl fixture () : string =
-    inl dir = fresh ()
-    inl _ = lay (host_join dir "_.root") 3i64
+:= fixture () : string =
+    := dir = fresh ()
+    := _ = lay (host_join dir "_.root") 3i64
     dir
 
-inl order_fixture () : string =
-    inl dir = fresh ()
-    inl _ = host_mkdir (host_join dir "m")
-    inl _ = host_write (host_join dir "b.txt") "x"
-    inl _ = host_write (host_join dir "a.txt") "yy"
-    inl _ = host_write (host_join (host_join dir "m") "file.txt") "z"
+:= order_fixture () : string =
+    := dir = fresh ()
+    := _ = host_mkdir (host_join dir "m")
+    := _ = host_write (host_join dir "b.txt") "x"
+    := _ = host_write (host_join dir "a.txt") "yy"
+    := _ = host_write (host_join (host_join dir "m") "file.txt") "z"
     dir
 
-inl same (got : string) (want : string) (dump : string) : i32 =
-    if got =. want then 0i32
-    else
-        inl _ = host_write (host_join (host_temp ()) dump) got
+:= same (got : string) (want : string) (dump : string) : i32 =
+    ? got =. want ?> 0i32
+    |:
+        := _ = host_write (host_join (host_temp ()) dump) got
         1i32
 
-inl fixture_body () : string =
+:= fixture_body () : string =
     "<details open=\"true\"><summary>&#128194; <a href=\"_.root\">_.root</a><span> (10.00 "
     ^^ "B)</span></summary><div><details open=\"true\"><summary>&#128194; <a href=\"_.root/3\">3</a><span> (6.00 "
     ^^ "B)</span></summary><div><details open=\"true\"><summary>&#128194; <a href=\"_.root/3/2\">2</a><span> (3.00 "
@@ -664,16 +664,16 @@ inl fixture_body () : string =
     ^^ "B)</span></div></div></details><div>&#128196; <a href=\"_.root/3/file.txt\">file.txt</a><span> (3.00 "
     ^^ "B)</span></div></div></details><div>&#128196; <a href=\"_.root/file.txt\">file.txt</a><span> (4.00 "
     ^^ "B)</span></div></div></details>"
-inl order_body () : string =
+:= order_body () : string =
     "<details open=\"true\"><summary>&#128194; <a href=\"m\">m</a><span> (1.00 "
     ^^ "B)</span></summary><div><div>&#128196; <a href=\"m/file.txt\">file.txt</a><span> (1.00 "
     ^^ "B)</span></div></div></details><div>&#128196; <a href=\"a.txt\">a.txt</a><span> (2.00 "
     ^^ "B)</span></div><div>&#128196; <a href=\"b.txt\">b.txt</a><span> (1.00 B)</span></div>"
 
-inl readme_fixture () : string =
-    inl dir = fresh ()
-    inl _ = host_mkdir dir
-    inl _ =
+:= readme_fixture () : string =
+    := dir = fresh ()
+    := _ = host_mkdir dir
+    := _ =
         host_write
             (host_join dir "README.md")
             (
@@ -683,56 +683,56 @@ inl readme_fixture () : string =
             )
     dir
 
-inl readme_body () : string =
+:= readme_body () : string =
     "<section class=\"readme\">\n<h1>Title</h1>\n<p>Some <code>code</code> and <a href=\"x.html\">a link</a>.</p>\n"
     ^^ "<ul>\n<li>one</li>\n<li>two &lt;b&gt;</li>\n</ul>\n<p>봉쥬르 &amp; é <a href=\"k.html\">깃허브</a></p>\n"
     ^^ "<p>Hi! <img src=\"logo.png\" alt=\"logo\"> <a href=\"ci.html\"><img src=\"b.svg\" alt=\"CI\"></a></p>\n"
     ^^ "<p><strong>Bold</strong> and <a href=\"https://x.org\">https://x.org</a> and *star*</p>\n<hr>\n<ul>\n"
     ^^ "<li>top</li>\n<li>nested</li>\n</ul>\n<pre><code>let x = 1 &lt; 2\n</code></pre>\n</section>\n"
 
-inl self_test () : i32 =
-    inl tree = read_tree (fixture ())
-    inl page_ok = same (page tree "") (doc_head () ++ fixture_body () ++ doc_close "") "dir-tree-html-got.html"
-    inl total_ok = if (bytes tree) =. 10i64 then 0i32 else 3i32
-    inl order_ok =
+:= self_test () : i32 =
+    := tree = read_tree (fixture ())
+    := page_ok = same (page tree "") (doc_head () ++ fixture_body () ++ doc_close "") "dir-tree-html-got.html"
+    := total_ok = ? (bytes tree) =. 10i64 ?> 0i32 |: 3i32
+    := order_ok =
         same
             (page (read_tree (order_fixture ())) "")
             (doc_head () ++ order_body () ++ doc_close "")
             "dir-tree-html-order-got.html"
-    inl readme_ok = same (readme_html (readme_fixture ())) (readme_body ()) "dir-tree-html-readme-got.html"
-    inl close_ok = same (doc_close "<p>r</p>\n") "</div>\n<p>r</p>\n</body>\n</html>\n" "dir-tree-html-close-got.html"
-    inl labels_ok =
-        if (size_label 1024i64) =. "1024.00 B" then
-            if (size_label 1025i64) =. "1.00 KB" then
-                if (size_label 1048576i64) =. "1024.00 KB" then
-                    if (size_label 1048577i64) =. "1.00 MB" then 0i32 else 1i32
-                else 1i32
-            else 1i32
-        else 1i32
-    if page_ok =. 0i32
-    then
-        if total_ok =. 0i32
-        then
-            if order_ok =. 0i32
-            then
-                if readme_ok =. 0i32
-                then
-                    if close_ok =. 0i32
-                    then labels_ok
-                    else 5i32
-                else 4i32
-            else order_ok
-        else total_ok
-    else page_ok
+    := readme_ok = same (readme_html (readme_fixture ())) (readme_body ()) "dir-tree-html-readme-got.html"
+    := close_ok = same (doc_close "<p>r</p>\n") "</div>\n<p>r</p>\n</body>\n</html>\n" "dir-tree-html-close-got.html"
+    := labels_ok =
+        ? (size_label 1024i64) =. "1024.00 B" ?>
+            ? (size_label 1025i64) =. "1.00 KB" ?>
+                ? (size_label 1048576i64) =. "1024.00 KB" ?>
+                    ? (size_label 1048577i64) =. "1.00 MB" ?> 0i32 |: 1i32
+                |: 1i32
+            |: 1i32
+        |: 1i32
+    ? page_ok =. 0i32
+    ?>
+        ? total_ok =. 0i32
+        ?>
+            ? order_ok =. 0i32
+            ?>
+                ? readme_ok =. 0i32
+                ?>
+                    ? close_ok =. 0i32
+                    ?> labels_ok
+                    |: 5i32
+                |: 4i32
+            |: order_ok
+        |: total_ok
+    |: page_ok
 
-inl run () : i32 =
-    inl dir_at = argument "--dir"
-    inl html_at = argument "--html"
-    if dir_at =. -1i32 then 2i32
-    elif html_at =. -1i32 then 2i32
-    else host_write (host_arg html_at) (page (read_tree (host_arg dir_at)) (readme_html (host_arg dir_at)))
+:= run () : i32 =
+    := dir_at = argument "--dir"
+    := html_at = argument "--html"
+    ? dir_at =. -1i32 ?> 2i32
+    |? html_at =. -1i32 ?> 2i32
+    |: host_write (host_arg html_at) (page (read_tree (host_arg dir_at)) (readme_html (host_arg dir_at)))
 
-inl main () : i32 =
-    if (host_arg_count ()) =. 2i32 then
-        if (host_arg 1i32) =. "--self-test" then self_test () else run ()
-    else run ()
+:= main () : i32 =
+    ? (host_arg_count ()) =. 2i32 ?>
+        ? (host_arg 1i32) =. "--self-test" ?> self_test () |: run ()
+    |: run ()
