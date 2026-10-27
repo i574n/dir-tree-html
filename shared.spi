@@ -1,0 +1,166 @@
+:< sm'_operators
+
+:= (++) (left : string) (right : string) : string = left ++# right
+:= (<.) (left : char) (right : char) : bool = !!!!LT(left, right)
+
+:= (~!\\) \* t u. ((args : t), (code : string)) : u =
+    $'__spiral_emit_rust !args !code '
+
+:= host_join (left : string) (right : string) : string =
+    !\\((left, right), $'"Rc::<str>::from(std::path::Path::new($0.as_ref()).join($1.as_ref()).display().to_string())"')
+
+:= digit (n : i64) : string =
+    ? n = 0i64 ?> "0"
+    |? n = 1i64 ?> "1"
+    |? n = 2i64 ?> "2"
+    |? n = 3i64 ?> "3"
+    |? n = 4i64 ?> "4"
+    |? n = 5i64 ?> "5"
+    |? n = 6i64 ?> "6"
+    |? n = 7i64 ?> "7"
+    |? n = 8i64 ?> "8"
+    |? n = 9i64 ?> "9"
+    |: "0"
+
+:~ ^ show_i64 (n : i64) : string =
+    := ch = digit (n % 10i64)
+    := rest = n / 10i64
+    ? rest = 0i64 ?> ch |: show_i64 rest ++ ch
+
+:~ ^ find_nl (text : string) (at : i32) : i32 =
+    ? at = (sm.length text : i32) ?> at
+    |? (sm.index text at) = (sm.index "\n" 0i32) ?> at
+    |: find_nl text (at + 1i32)
+
+inl doc_head () : string = """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <style>
+    html {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+    body {
+        background-color: #222;
+        color: #ccc;
+        margin: 8px;
+        line-height: 1.6;
+        overflow-wrap: anywhere;
+    }
+    a {
+      color: #777;
+      font-size: 15px;
+    }
+    span {
+      font-size: 11px;
+    }
+    div > div {
+      padding-left: 10px;
+    }
+    details > div {
+      padding-left: 19px;
+    }
+    .readme {
+      border-top: 1px solid #444;
+      margin-top: 16px;
+      padding-top: 8px;
+      max-width: 900px;
+    }
+    .readme a {
+      color: #9ab;
+    }
+    .readme pre {
+      background-color: #1a1a1a;
+      padding: 8px;
+      overflow-x: auto;
+    }
+    @media (max-width: 600px) {
+      a {
+        font-size: 16px;
+      }
+      span {
+        font-size: 12px;
+      }
+      div > div {
+        padding-left: 4px;
+      }
+      details > div {
+        padding-left: 10px;
+      }
+    }
+      </style>
+    </head>
+    <body>
+      <div>
+    """
+:= doc_close (readme : string) : string = "</div>\n" ++ readme ++ "</body>\n</html>\n"
+
+:= copied_run (text : string) (run_start : i32) (stop : i32) : string =
+    ? run_start = stop ?> "" |: sm.slice text { from = run_start; to = stop - 1i32 }
+
+:= markdown (text : string) : string = $'dtl_markdown::dtl_markdown(&*!text)'
+
+:= tree_html (dir : string) : string = $'dtl_tree::dtl_tree_html(&*!dir)'
+
+:= tree_bytes (dir : string) : i64 = $'dtl_tree::dtl_tree_bytes(&*!dir)'
+
+:= drop_final_newline (text : string) : string =
+    := ends = sm'.ends_with "\n" text
+    ? ends && (sm.length text : i32) = 1i32 ?> ""
+    |? ends ?> sm.slice text { from = 0i32; to = (sm.length text : i32) - 2i32 }
+    |: text
+
+:= read_lines_text (path : string) : string =
+    ?= file_system.read path |> resultm.unbox ?|
+    | Error _ => ""
+    | Ok bytes =>
+        ?= sm'.string_from_utf8 bytes |> resultm.unbox ?|
+        | Error _ => ""
+        | Ok text => text |> sm'.from_std_string |> sm'.replace "\r\n" "\n" |> drop_final_newline
+
+:= host_is_file (path : string) : bool =
+    !\\(path, $'"std::path::Path::new($0.as_ref()).is_file()"')
+
+:= host_write_file (path : string) (text : string) : i32 =
+    !\\((path, text), $'"i32::from(std::fs::write($0.as_ref(), $1.as_ref().as_bytes()).is_err())"')
+
+:= host_mkdir (path : string) : i32 =
+    !\\(path, $'"i32::from(std::fs::create_dir_all($0.as_ref()).is_err())"')
+
+:= host_temp () : string =
+    !\\((), $'"Rc::<str>::from(std::env::temp_dir().display().to_string())"')
+
+:= readme_html (dir : string) : string =
+    := path = host_join dir "README.md"
+    ? host_is_file path
+    ?> "<section class=\"readme\">\n" ++ markdown (read_lines_text path) ++ "</section>\n"
+    |: ""
+
+:= page (dir : string) (readme : string) : string = doc_head () ++ tree_html dir ++ doc_close readme
+
+:~ ^ last_sep (text : string) (at : i32) (found : i32) : i32 =
+    ? at = (sm.length text : i32) ?> found
+    |:
+        := ch = sm.index text at
+        := next =
+            ? ch = (sm.index "/" 0i32) ?> at
+            |? ch = (sm.index "\\" 0i32) ?> at
+            |: found
+        last_sep text (at + 1i32) next
+
+:= parent_text (path : string) : string =
+    := sep = last_sep path 0i32 -1i32
+    ? sep = -1i32 ?> ""
+    |:
+        := parent = sm.slice path { from = 0i32; to = sep - 1i32 }
+        ? (sm.length parent : i32) = 2i32 && (sm.index parent 1i32) = (sm.index ":" 0i32) ?>
+            sm.slice path { from = 0i32; to = sep }
+        |: parent
+
+:= host_write (path : string) (text : string) : i32 =
+    := parent = parent_text path
+    := made = ? (sm.length parent : i32) = 0i32 ?> 0i32 |: host_mkdir parent
+    ? made = 0i32 ?> host_write_file path text |: made

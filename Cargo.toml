@@ -7,6 +7,14 @@ edition = "2024"
 license-file = "LICENSE"
 repository = "https://github.com/i574n/dir-tree-html"
 
+[workspace]
+members = ["inline", "markdown", "selftest", "tree"]
+
+[dependencies]
+dtl_markdown = { path = "markdown" }
+dtl_self_test = { path = "selftest" }
+dtl_tree = { path = "tree" }
+
 [[bin]]
 name = "dir-tree-html"
 path = "dir_tree_html.rs"

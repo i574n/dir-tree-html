@@ -5,3 +5,31 @@ version = 4
 [[package]]
 name = "dir-tree-html"
 version = "0.0.1"
+dependencies = [
+ "dtl_markdown",
+ "dtl_self_test",
+ "dtl_tree",
+]
+
+[[package]]
+name = "dtl_inline"
+version = "0.0.1"
+
+[[package]]
+name = "dtl_markdown"
+version = "0.0.1"
+dependencies = [
+ "dtl_inline",
+]
+
+[[package]]
+name = "dtl_self_test"
+version = "0.0.1"
+dependencies = [
+ "dtl_markdown",
+ "dtl_tree",
+]
+
+[[package]]
+name = "dtl_tree"
+version = "0.0.1"

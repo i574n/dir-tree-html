@@ -7,6 +7,18 @@ $ErrorActionPreference = "Stop"
 . deps/spiral/scripts/core.ps1
 . deps/spiral/lib/spiral/lib.ps1
 
+if (!(BuildSpiral inline/inline.spi inline/inline.rs "dir-tree-html/inline")) {
+    throw "RUST-FAILED dir-tree-html/inline / compile"
+}
+if (!(BuildSpiral markdown/markdown.spi markdown/markdown.rs "dir-tree-html/markdown")) {
+    throw "RUST-FAILED dir-tree-html/markdown / compile"
+}
+if (!(BuildSpiral tree/tree.spi tree/tree.rs "dir-tree-html/tree")) {
+    throw "RUST-FAILED dir-tree-html/tree / compile"
+}
+if (!(BuildSpiral selftest/selftest.spi selftest/selftest.rs "dir-tree-html/selftest")) {
+    throw "RUST-FAILED dir-tree-html/selftest / compile"
+}
 if (!(BuildSpiral dir_tree_html.spi dir_tree_html.rs "dir-tree-html")) {
     throw "RUST-FAILED dir-tree-html / compile"
 }

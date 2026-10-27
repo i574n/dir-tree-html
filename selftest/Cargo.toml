@@ -1,0 +1,18 @@
+[package]
+name = "dtl_self_test"
+version = "0.0.1"
+edition = "2024"
+license-file = "../LICENSE"
+repository = "https://github.com/i574n/dir-tree-html"
+
+[package.metadata.spiral]
+entry = "selftest.spi"
+output = "selftest.rs"
+
+[lib]
+name = "dtl_self_test"
+path = "selftest.rs"
+
+[dependencies]
+dtl_markdown = { path = "../markdown" }
+dtl_tree = { path = "../tree" }

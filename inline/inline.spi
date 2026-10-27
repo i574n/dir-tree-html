@@ -1,0 +1,213 @@
+:< shared
+
+:~ ^ escape_from (text : string) (i : i32) (run_start : i32) (acc : string) : string =
+    ? i = (sm.length text : i32) ?> acc ++ copied_run text run_start i
+    |:
+        := ch = sm.index text i
+        := entity =
+            ? ch = (sm.index "&" 0i32) ?> "&amp;"
+            |? ch = (sm.index "<" 0i32) ?> "&lt;"
+            |? ch = (sm.index ">" 0i32) ?> "&gt;"
+            |? ch = (sm.index "\"" 0i32) ?> "&quot;"
+            |: ""
+        ? entity = "" ?> escape_from text (i + 1i32) run_start acc
+        |: escape_from text (i + 1i32) (i + 1i32) (acc ++ copied_run text run_start i ++ entity)
+
+:= escape (text : string) : string = escape_from text 0i32 0i32 ""
+
+:~ ^ find_char_from (text : string) (ch : char) (i : i32) : i32 =
+    ? i = (sm.length text : i32) ?> -1i32
+    |? (sm.index text i) = ch ?> i
+    |: find_char_from text ch (i + 1i32)
+
+:~ ^ next_inline_marker_from (text : string) (i : i32) : i32 =
+    ? i = (sm.length text : i32) ?> i
+    |? (sm.index text i) = (sm.index "`" 0i32) ?> i
+    |? (sm.index text i) = (sm.index "[" 0i32) ?> i
+    |? (sm.index text i) = (sm.index "!" 0i32) ?> i
+    |? (sm.index text i) = (sm.index "*" 0i32) ?> i
+    |? (sm.index text i) = (sm.index "<" 0i32) ?> i
+    |? (sm.index text i) = (sm.index "\\" 0i32) ?> i
+    |: next_inline_marker_from text (i + 1i32)
+
+:~ ^ double_close (text : string) (i : i32) : i32 =
+    := n = sm.length text : i32
+    ? i = n ?> -1i32
+    |? (i + 1i32) = n ?> -1i32
+    |? (sm.index text i) = (sm.index "*" 0i32) ?>
+        ? (sm.index text (i + 1i32)) = (sm.index "*" 0i32) ?> i |: double_close text (i + 1i32)
+    |: double_close text (i + 1i32)
+
+:= escapable (ch : char) : bool =
+    ? ch = (sm.index "*" 0i32) ?> !+
+    |? ch = (sm.index "_" 0i32) ?> !+
+    |? ch = (sm.index "\\" 0i32) ?> !+
+    |? ch = (sm.index "`" 0i32) ?> !+
+    |? ch = (sm.index "[" 0i32) ?> !+
+    |? ch = (sm.index "]" 0i32) ?> !+
+    |? ch = (sm.index "#" 0i32) ?> !+
+    |? ch = (sm.index "-" 0i32) ?> !+
+    |? ch = (sm.index "!" 0i32) ?> !+
+    |? ch = (sm.index "<" 0i32) ?> !+
+    |: !-
+
+:~ image_close (text : string) (i : i32) : i32 =
+    := n = sm.length text : i32
+    ? (sm.index text i) = (sm.index "!" 0i32)
+    ?>
+        ? (i + 1i32) = n
+        ?> -1i32
+        |? (sm.index text (i + 1i32)) = (sm.index "[" 0i32)
+        ?>
+            := mid = find_char_from text (sm.index "]" 0i32) (i + 2i32)
+            ? mid = -1i32
+            ?> -1i32
+            |? (mid + 1i32) = n
+            ?> -1i32
+            |? (sm.index text (mid + 1i32)) = (sm.index "(" 0i32)
+            ?> find_char_from text (sm.index ")" 0i32) (mid + 2i32)
+            |: -1i32
+        |: -1i32
+    |: -1i32
+
+:= render_image (text : string) (i : i32) (close : i32) : string =
+    := mid = find_char_from text (sm.index "]" 0i32) (i + 2i32)
+    := q = "\""
+    "<img src="
+    ++ q
+    ++ escape (copied_run text (mid + 2i32) close)
+    ++ q
+    ++ " alt="
+    ++ q
+    ++ escape (copied_run text (i + 2i32) mid)
+    ++ q
+    ++ ">"
+
+:~ badge_close (text : string) (i : i32) : i32 =
+    := n = sm.length text : i32
+    ? (sm.index text i) = (sm.index "[" 0i32)
+    ?>
+        ? (i + 1i32) = n
+        ?> -1i32
+        |:
+            := inner = image_close text (i + 1i32)
+            ? inner = -1i32
+            ?> -1i32
+            |? (inner + 1i32) = n
+            ?> -1i32
+            |? (sm.index text (inner + 1i32)) = (sm.index "]" 0i32)
+            ?>
+                ? (inner + 2i32) = n
+                ?> -1i32
+                |? (sm.index text (inner + 2i32)) = (sm.index "(" 0i32)
+                ?> find_char_from text (sm.index ")" 0i32) (inner + 3i32)
+                |: -1i32
+            |: -1i32
+    |: -1i32
+
+:~ ^ inline_from (text : string) (i : i32) (acc : string) : string =
+    := n = sm.length text : i32
+    ? i = n
+    ?> acc
+    |:
+        := ch = sm.index text i
+        := plain () =
+            := stop = next_inline_marker_from text (i + 1i32)
+            inline_from text stop (acc ++ escape (copied_run text i stop))
+        ? ch = (sm.index "`" 0i32)
+        ?>
+            := close = find_char_from text ch (i + 1i32)
+            ? close = -1i32
+            ?> plain ()
+            |:
+                inline_from text
+                    (close + 1i32)
+                    (acc ++ "<code>" ++ escape (sm.slice text { from = i + 1i32; to = close - 1i32 }) ++ "</code>")
+        |? ch = (sm.index "\\" 0i32)
+        ?>
+            ? (i + 1i32) = n
+            ?> plain ()
+            |? escapable (sm.index text (i + 1i32))
+            ?> inline_from text (i + 2i32) (acc ++ escape (copied_run text (i + 1i32) (i + 2i32)))
+            |: plain ()
+        |? ch = (sm.index "*" 0i32)
+        ?>
+            ? (i + 1i32) = n
+            ?> plain ()
+            |? (sm.index text (i + 1i32)) = (sm.index "*" 0i32)
+            ?>
+                := close = double_close text (i + 2i32)
+                ? close = -1i32
+                ?> plain ()
+                |:
+                    inline_from text
+                        (close + 2i32)
+                        (acc ++ "<strong>" ++ inline_from (copied_run text (i + 2i32) close) 0i32 "" ++ "</strong>")
+            |: plain ()
+        |? ch = (sm.index "<" 0i32)
+        ?>
+            := close = find_char_from text (sm.index ">" 0i32) (i + 1i32)
+            ? close = -1i32
+            ?> plain ()
+            |? close > (i + 5i32)
+            ?>
+                := url = copied_run text (i + 1i32) close
+                ? (copied_run url 0i32 4i32) = "http"
+                ?>
+                    := q = "\""
+                    inline_from text
+                        (close + 1i32)
+                        (acc ++ "<a href=" ++ q ++ escape url ++ q ++ ">" ++ escape url ++ "</a>")
+                |: plain ()
+            |: plain ()
+        |? ch = (sm.index "!" 0i32)
+        ?>
+            := close = image_close text i
+            ? close = -1i32 ?> plain ()
+            |: inline_from text (close + 1i32) (acc ++ render_image text i close)
+        |? (badge_close text i) = -1i32
+        ?>
+            ? ch = (sm.index "[" 0i32)
+            ?>
+                := mid = find_char_from text (sm.index "]" 0i32) (i + 1i32)
+                ? mid = -1i32
+                ?> plain ()
+                |? (mid + 1i32) = n
+                ?> plain ()
+                |? (sm.index text (mid + 1i32)) = (sm.index "(" 0i32)
+                ?>
+                    := close = find_char_from text (sm.index ")" 0i32) (mid + 2i32)
+                    ? close = -1i32
+                    ?> plain ()
+                    |:
+                        := q = "\""
+                        := label = sm.slice text { from = i + 1i32; to = mid - 1i32 }
+                        := href = sm.slice text { from = mid + 2i32; to = close - 1i32 }
+                        inline_from text
+                            (close + 1i32)
+                            (acc ++ "<a href=" ++ q ++ escape href ++ q ++ ">" ++ escape label ++ "</a>")
+                |: plain ()
+            |: plain ()
+        |:
+            := close = badge_close text i
+            := inner = image_close text (i + 1i32)
+            := q = "\""
+            inline_from text
+                (close + 1i32)
+                (
+                    acc
+                    ++ "<a href="
+                    ++ q
+                    ++ escape (copied_run text (inner + 3i32) close)
+                    ++ q
+                    ++ ">"
+                    ++ render_image text (i + 1i32) inner
+                    ++ "</a>"
+                )
+
+:= render_inline (text : string) : string = inline_from text 0i32 ""
+
+:= main () : i32 =
+    export "dtl_escape" ((\ text => escape text) : string -> string)
+    export "dtl_render_inline" ((\ text => render_inline text) : string -> string)
+    0i32

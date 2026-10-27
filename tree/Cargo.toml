@@ -1,0 +1,14 @@
+[package]
+name = "dtl_tree"
+version = "0.0.1"
+edition = "2024"
+license-file = "../LICENSE"
+repository = "https://github.com/i574n/dir-tree-html"
+
+[package.metadata.spiral]
+entry = "tree.spi"
+output = "tree.rs"
+
+[lib]
+name = "dtl_tree"
+path = "tree.rs"

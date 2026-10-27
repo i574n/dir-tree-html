@@ -1,0 +1,106 @@
+:< shared
+
+:= escape (text : string) : string = $'dtl_inline::dtl_escape(&*!text)'
+
+:= render_inline (text : string) : string = $'dtl_inline::dtl_render_inline(&*!text)'
+:~ ^ starts_at (line : string) (prefix : string) (i : i32) : bool =
+    ? i = (sm.length prefix : i32) ?> !+
+    |? i = (sm.length line : i32) ?> !-
+    |? (sm.index line i) = (sm.index prefix i) ?> starts_at line prefix (i + 1i32)
+    |: !-
+
+:= starts (line : string) (prefix : string) : bool = starts_at line prefix 0i32
+
+:~ ^ blank_from (line : string) (i : i32) : bool =
+    ? i = (sm.length line : i32) ?> !+
+    |? (sm.index line i) = (sm.index " " 0i32) ?> blank_from line (i + 1i32)
+    |: !-
+
+:~ ^ count_hashes (line : string) (i : i32) : i32 =
+    ? i = (sm.length line : i32) ?> i
+    |? (sm.index line i) = (sm.index "#" 0i32) ?> count_hashes line (i + 1i32)
+    |: i
+
+:= heading_level (line : string) : i32 =
+    := hashes = count_hashes line 0i32
+    ? hashes = 0i32 ?> 0i32
+    |? hashes > 6i32 ?> 0i32
+    |? hashes = (sm.length line : i32) ?> 0i32
+    |? (sm.index line hashes) = (sm.index " " 0i32) ?> hashes
+    |: 0i32
+
+:~ ^ lead_spaces (line : string) (i : i32) : i32 =
+    ? i = (sm.length line : i32) ?> i
+    |? (sm.index line i) = (sm.index " " 0i32) ?> lead_spaces line (i + 1i32)
+    |: i
+
+:= bullet_start (line : string) : i32 =
+    := lead = lead_spaces line 0i32
+    ? (lead + 2i32) > (sm.length line : i32) ?> -1i32
+    |? (sm.index line (lead + 1i32)) = (sm.index " " 0i32) ?>
+        ? (sm.index line lead) = (sm.index "-" 0i32) ?> lead + 2i32
+        |? (sm.index line lead) = (sm.index "*" 0i32) ?> lead + 2i32
+        |: -1i32
+    |: -1i32
+
+:| md_block =
+    | MdNone
+    | MdParagraph
+    | MdList
+    | MdCode
+
+:= close_block (block : md_block) : string =
+    ?= block ?|
+    | MdNone => ""
+    | MdParagraph => "</p>\n"
+    | MdList => "</ul>\n"
+    | MdCode => "</code></pre>\n"
+
+:~ ^ markdown_lines (text : string) (at : i32) (block : md_block) (acc : string) : string =
+    := n = sm.length text : i32
+    ? at > n
+    ?> acc ++ close_block block
+    |:
+        := nl = find_nl text at
+        := line = sm.slice text { from = at; to = nl - 1i32 }
+        := next = nl + 1i32
+        ?= block ?|
+        | MdCode =>
+            ? starts line "```" ?> markdown_lines text next MdNone (acc ++ "</code></pre>\n")
+            |: markdown_lines text next MdCode (acc ++ escape line ++ "\n")
+        | _ =>
+            := level = heading_level line
+            ? starts line "```"
+            ?> markdown_lines text next MdCode (acc ++ close_block block ++ "<pre><code>")
+            |? blank_from line 0i32
+            ?> markdown_lines text next MdNone (acc ++ close_block block)
+            |? level > 0i32
+            ?>
+                := tag =
+                    ? level = 1i32 ?> "h1"
+                    |? level = 2i32 ?> "h2"
+                    |? level = 3i32 ?> "h3"
+                    |? level = 4i32 ?> "h4"
+                    |? level = 5i32 ?> "h5"
+                    |: "h6"
+                := title = sm.slice line { from = level + 1i32; to = (sm.length line : i32) - 1i32 }
+                markdown_lines text next MdNone (
+                    acc ++ close_block block ++ "<" ++ tag ++ ">" ++ render_inline title ++ "</" ++ tag ++ ">\n"
+                )
+            |? line = "---"
+            ?> markdown_lines text next MdNone (acc ++ close_block block ++ "<hr>\n")
+            |? (bullet_start line) > 0i32
+            ?>
+                := item =
+                    "<li>" ++ render_inline (copied_run line (bullet_start line) (sm.length line : i32)) ++ "</li>\n"
+                ?= block ?|
+                | MdList => markdown_lines text next MdList (acc ++ item)
+                | _ => markdown_lines text next MdList (acc ++ close_block block ++ "<ul>\n" ++ item)
+            |:
+                ?= block ?|
+                | MdParagraph => markdown_lines text next MdParagraph (acc ++ " " ++ render_inline line)
+                | _ => markdown_lines text next MdParagraph (acc ++ close_block block ++ "<p>" ++ render_inline line)
+
+:= main () : i32 =
+    export "dtl_markdown" ((\ text => markdown_lines text 0i32 MdNone "") : string -> string)
+    0i32

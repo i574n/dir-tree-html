@@ -1,6 +1,16 @@
-packageDir: deps/spiral/apps/compiler/tmp/samples
+packageDir: deps/spiral/lib
 moduleDir: .
 packages:
-    core-
+    |core-
+    spiral-
 modules:
+    shared
+    inline/
+        inline
+    markdown/
+        markdown
+    tree/
+        tree
+    selftest/
+        selftest
     dir_tree_html
