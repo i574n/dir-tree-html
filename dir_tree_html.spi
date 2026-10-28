@@ -2,11 +2,6 @@
 
 := self_test () : i32 = $'dtl_self_test::dtl_self_test(0i32)'
 
-:~ ^ args_from (i : i32) : list string =
-    ?= env.try_command_line_argument i ?|
-    | None => []
-    | Some argument => argument :: args_from (i + 1i32)
-
 :== tree_options = { dir : string; html : string }
 
 := run (args : list string) : i32 =
@@ -17,5 +12,5 @@
         2i32
 
 := main () : i32 =
-    := args = args_from 0i32
+    := args = env.command_line_arguments ()
     ? cli_args.has_switch "self-test" args ?> self_test () |: run args

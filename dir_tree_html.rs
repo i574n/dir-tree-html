@@ -58,7 +58,7 @@ fn command_line_argument_2(mut v0: i32) -> Rc<str> {
     let v3: Rc<str> = Rc::<str>::from(std::env::args().nth(v2).unwrap_or_default());
     v3
 }
-fn args_from_0(mut v0: i32) -> Rc<UH0> {
+fn arguments_from_0(mut v0: i32) -> Rc<UH0> {
     let v1: bool = v0 >= 0i32;
     let v4: bool = if v1 {
         let v2: i32 = command_line_argument_count_1();
@@ -80,7 +80,7 @@ fn args_from_0(mut v0: i32) -> Rc<UH0> {
         US0::US0_Some(v10) => {
             let v10: Rc<str> = v10.clone();
             let v11: i32 = v0.wrapping_add(1i32);
-            let v12: Rc<UH0> = args_from_0(v11);
+            let v12: Rc<UH0> = arguments_from_0(v11);
             Rc::new(UH0::UH0_Cons(v10.clone(), v12.clone()))
         }
     }
@@ -220,7 +220,7 @@ fn last_sep_11(mut v0: Rc<str>, mut v1: i32, mut v2: i32) -> i32 {
 }
 fn spiral_main() -> i32 {
     let v0: i32 = 0i32;
-    let v1: Rc<UH0> = args_from_0(v0);
+    let v1: Rc<UH0> = arguments_from_0(v0);
     let v2: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("--"); } LIT.with(|lit| lit.clone()) };
     let v3: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("self-test"); } LIT.with(|lit| lit.clone()) };
     let v4: Rc<str> = { thread_local!{ static LIT: Rc<str> = Rc::<str>::from("--self-test"); } LIT.with(|lit| lit.clone()) };
