@@ -1,5 +1,7 @@
 # dir-tree-html
 
+[![깃허브 코드스페이스](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=1411208249)
+
 Renders a directory tree as a single HTML page. Written in [Spiral](https://github.com/i574n/spiral), compiled to Rust.
 
 ```powershell

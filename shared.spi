@@ -1,8 +1,6 @@
 :< sm'_operators
 
 := (++) (left : string) (right : string) : string = left ++# right
-:= (<.) (left : char) (right : char) : bool = !!!!LT(left, right)
-
 := (~!\\) \* t u. ((args : t), (code : string)) : u =
     $'__spiral_emit_rust !args !code '
 

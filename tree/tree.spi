@@ -55,7 +55,7 @@
         := left_ch = sm.index left at
         := right_ch = sm.index right at
         ? left_ch = right_ch ?> cmp_at left right (at + 1i32)
-        |? left_ch <. right_ch ?> -1i32
+        |? sm'.char_code left_ch < sm'.char_code right_ch ?> -1i32
         |: 1i32
 
 := name_before (left : string) (right : string) : bool =
