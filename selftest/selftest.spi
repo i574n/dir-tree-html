@@ -1,0 +1,115 @@
+:< shared
+
+:= size_label (bytes : i64) : string = $'dtl_tree::dtl_size_label(!bytes)'
+
+:~ ^ times (piece : string) (n : i64) : string =
+    ? n <= 0i64 ?> "" |: piece ++ times piece (n - 1i64)
+
+:~ ^ lay (dir : string) (n : i64) : i32 =
+    ? n < 0i64 ?> 0i32
+    |:
+        := _ = host_mkdir dir
+        := mark = digit n
+        := _ = host_write (host_join dir "file.txt") (times mark (n + 1i64))
+        lay (host_join dir mark) (n - 1i64)
+
+:= unique_name () : string =
+    guid.new_raw_guid () |> guid.to_string
+
+:= fresh () : string =
+    host_join (host_temp ()) (unique_name ())
+
+:= fixture () : string =
+    := dir = fresh ()
+    := _ = lay (host_join dir "_.root") 3i64
+    dir
+
+:= order_fixture () : string =
+    := dir = fresh ()
+    := _ = host_mkdir (host_join dir "m")
+    := _ = host_write (host_join dir "b.txt") "x"
+    := _ = host_write (host_join dir "a.txt") "yy"
+    := _ = host_write (host_join (host_join dir "m") "file.txt") "z"
+    dir
+
+:= same (got : string) (want : string) (dump : string) : i32 =
+    ? got = want ?> 0i32
+    |:
+        := _ = host_write (host_join (host_temp ()) dump) got
+        1i32
+
+:= fixture_body () : string =
+    "<details open=\"true\"><summary>&#128194; <a href=\"_.root\">_.root</a><span> (10.00 "
+    ^^ "B)</span></summary><div><details open=\"true\"><summary>&#128194; <a href=\"_.root/3\">3</a><span> (6.00 "
+    ^^ "B)</span></summary><div><details open=\"true\"><summary>&#128194; <a href=\"_.root/3/2\">2</a><span> (3.00 "
+    ^^ "B)</span></summary><div><details open=\"true\"><summary>&#128194; <a href=\"_.root/3/2/1\">1</a><span> (1.00 "
+    ^^ "B)</span></summary><div><div>&#128196; <a href=\"_.root/3/2/1/file.txt\">file.txt</a><span> (1.00 "
+    ^^ "B)</span></div></div></details><div>&#128196; <a href=\"_.root/3/2/file.txt\">file.txt</a><span> (2.00 "
+    ^^ "B)</span></div></div></details><div>&#128196; <a href=\"_.root/3/file.txt\">file.txt</a><span> (3.00 "
+    ^^ "B)</span></div></div></details><div>&#128196; <a href=\"_.root/file.txt\">file.txt</a><span> (4.00 "
+    ^^ "B)</span></div></div></details>"
+
+:= order_body () : string =
+    "<details open=\"true\"><summary>&#128194; <a href=\"m\">m</a><span> (1.00 "
+    ^^ "B)</span></summary><div><div>&#128196; <a href=\"m/file.txt\">file.txt</a><span> (1.00 "
+    ^^ "B)</span></div></div></details><div>&#128196; <a href=\"a.txt\">a.txt</a><span> (2.00 "
+    ^^ "B)</span></div><div>&#128196; <a href=\"b.txt\">b.txt</a><span> (1.00 B)</span></div>"
+
+:= readme_fixture () : string =
+    := dir = fresh ()
+    := _ = host_mkdir dir
+    := _ =
+        host_write
+            (host_join dir "README.md")
+            (
+                "# Title\n\nSome `code` and [a link](x.html).\n\n- one\n- two <b>\n\n봉쥬르 & é [깃허브](k.html)\n\n"
+                ^^ "Hi! ![logo](logo.png) [![CI](b.svg)](ci.html)\n\n**Bold** and <https://x.org> and \\*star\\*\n\n"
+                ^^ "---\n\n- top\n  - nested\n\n```\nlet x = 1 < 2\n```\n"
+            )
+    dir
+
+:= readme_body () : string =
+    "<section class=\"readme\">\n<h1>Title</h1>\n<p>Some <code>code</code> and <a href=\"x.html\">a link</a>.</p>\n"
+    ^^ "<ul>\n<li>one</li>\n<li>two &lt;b&gt;</li>\n</ul>\n<p>봉쥬르 &amp; é <a href=\"k.html\">깃허브</a></p>\n"
+    ^^ "<p>Hi! <img src=\"logo.png\" alt=\"logo\"> <a href=\"ci.html\"><img src=\"b.svg\" alt=\"CI\"></a></p>\n"
+    ^^ "<p><strong>Bold</strong> and <a href=\"https://x.org\">https://x.org</a> and *star*</p>\n<hr>\n<ul>\n"
+    ^^ "<li>top</li>\n<li>nested</li>\n</ul>\n<pre><code>let x = 1 &lt; 2\n</code></pre>\n</section>\n"
+
+:= self_test () : i32 =
+    := tree = fixture ()
+    := page_ok = same (page tree "") (doc_head () ++ fixture_body () ++ doc_close "") "dir-tree-html-got.html"
+    := total_ok = ? (tree_bytes tree) = 10i64 ?> 0i32 |: 3i32
+    := order_ok =
+        same
+            (page (order_fixture ()) "")
+            (doc_head () ++ order_body () ++ doc_close "")
+            "dir-tree-html-order-got.html"
+    := readme_ok = same (readme_html (readme_fixture ())) (readme_body ()) "dir-tree-html-readme-got.html"
+    := close_ok = same (doc_close "<p>r</p>\n") "</div>\n<p>r</p>\n</body>\n</html>\n" "dir-tree-html-close-got.html"
+    := labels_ok =
+        ? (size_label 1024i64) = "1024.00 B" ?>
+            ? (size_label 1025i64) = "1.00 KB" ?>
+                ? (size_label 1048576i64) = "1024.00 KB" ?>
+                    ? (size_label 1048577i64) = "1.00 MB" ?> 0i32 |: 1i32
+                |: 1i32
+            |: 1i32
+        |: 1i32
+    ? page_ok = 0i32
+    ?>
+        ? total_ok = 0i32
+        ?>
+            ? order_ok = 0i32
+            ?>
+                ? readme_ok = 0i32
+                ?>
+                    ? close_ok = 0i32
+                    ?> labels_ok
+                    |: 5i32
+                |: 4i32
+            |: order_ok
+        |: total_ok
+    |: page_ok
+
+:= main () : i32 =
+    export "dtl_self_test" ((\ seed => self_test ()) : i32 -> i32)
+    0i32

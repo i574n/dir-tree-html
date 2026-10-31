@@ -1,0 +1,14 @@
+[package]
+name = "dtl_inline"
+version = "0.0.1"
+edition = "2024"
+license-file = "../LICENSE"
+repository = "https://github.com/i574n/dir-tree-html"
+
+[package.metadata.spiral]
+entry = "inline.spi"
+output = "inline.rs"
+
+[lib]
+name = "dtl_inline"
+path = "inline.rs"

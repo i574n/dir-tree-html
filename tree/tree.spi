@@ -1,0 +1,124 @@
+:< shared
+
+:| ^ entry =
+    | End
+    | File : string * string * i64 * entry
+    | Folder : string * string * entry * entry
+
+:| ^ child =
+    | ChildEnd
+    | Child : i32 * string * child
+
+:! root = entry
+
+:? bytes node : node -> i64
+:? render node : node -> string
+
+:= child_of (path : string) (rest : child) (name : string) : child =
+    := child_path = host_join path name
+    ? file_system.rust_is_symlink child_path ?> rest
+    |? file_system.directory_exists child_path ?> Child (1i32, name, rest)
+    |? file_system.file_exists child_path ?> Child (0i32, name, rest)
+    |: rest
+
+:= listing (path : string) : child =
+    ?= file_system.read_dir_names path |> resultm.unbox ?|
+    | Ok names => names |> am'.vec_fold' (\ rest name => child_of path rest (sm'.from_std_string name)) ChildEnd
+    | Error _ => ChildEnd
+
+:= pad2 (n : i64) : string =
+    := text = show_i64 n
+    ? n < 10i64 ?> "0" ++ text |: text
+
+:= show_hundredths (n : i64) : string =
+    show_i64 (n / 100i64) ++ "." ++ pad2 (n % 100i64)
+
+:= scaled (bytes : i64) (scale : i64) : i64 =
+    (bytes * 100i64 + (scale / 2i64)) / scale
+
+:= size_label (bytes : i64) : string =
+    ? bytes > 1048576i64 ?> show_hundredths (scaled bytes 1048576i64) ++ " MB"
+    |? bytes > 1024i64 ?> show_hundredths (scaled bytes 1024i64) ++ " KB"
+    |: show_hundredths (scaled bytes 1i64) ++ " B"
+
+:= join_rel (parent : string) (name : string) : string =
+    ? (sm.length parent : i32) = 0i32 ?> name |: parent ++ "/" ++ name
+
+
+:~ ^ cmp_at (left : string) (right : string) (at : i32) : i32 =
+    := left_len = sm.length left : i32
+    := right_len = sm.length right : i32
+    ? at = left_len && at = right_len ?> 0i32
+    |? at = left_len ?> -1i32
+    |? at = right_len ?> 1i32
+    |:
+        := left_ch = sm.index left at
+        := right_ch = sm.index right at
+        ? left_ch = right_ch ?> cmp_at left right (at + 1i32)
+        |? sm'.char_code left_ch < sm'.char_code right_ch ?> -1i32
+        |: 1i32
+
+:= name_before (left : string) (right : string) : bool =
+    (cmp_at left right 0i32) < 0i32
+
+:= child_before (left_dir : i32) (left_name : string) (right_dir : i32) (right_name : string) : bool =
+    ? left_dir = right_dir ?> name_before left_name right_name |: left_dir > right_dir
+
+:~ ^ insert (is_dir : i32) (name : string) (rest : child) : child =
+    ?= rest ?|
+    | ChildEnd => Child (is_dir, name, ChildEnd)
+    | Child (other_dir, other_name, more) =>
+        ? child_before is_dir name other_dir other_name ?> Child (is_dir, name, rest)
+        |: Child (other_dir, other_name, insert is_dir name more)
+
+:~ ^ sort (items : child) : child =
+    ?= items ?|
+    | ChildEnd => ChildEnd
+    | Child (is_dir, name, more) => insert is_dir name (sort more)
+
+:= anchor (icon : string) (href : string) (text : string) (size : i64) : string =
+    := q = "\""
+    icon ++ " <a href=" ++ q ++ href ++ q ++ ">" ++ text ++ "</a><span> (" ++ size_label size ++ ")</span>"
+
+:~ ^ folder_bytes (item : entry) : i64 =
+    ?= item ?|
+    | End => 0i64
+    | File (_, _, size, next) => size + folder_bytes next
+    | Folder (_, _, children, next) => folder_bytes children + folder_bytes next
+
+:+ bytes entry = \ item => folder_bytes item
+:+ bytes root = \ (root items) => bytes items
+
+:~ ^ html_chain (item : entry) : string =
+    ?= item ?|
+    | End => ""
+    | File (name, parent, size, next) =>
+        "<div>" ++ anchor "&#128196;" (join_rel parent name) name size ++ "</div>" ++ html_chain next
+    | Folder (name, rel, children, next) =>
+        := q = "\""
+        "<details open=" ++ q ++ "true" ++ q ++ "><summary>" ++ anchor "&#128194;" rel name (bytes children) ++ "</summary><div>" ++ html_chain children ++ "</div></details>" ++ html_chain next
+
+:+ render entry = \ item => html_chain item
+:+ render root = \ (root items) => render items
+
+:~ ^ chain (path : string) (rel : string) (items : child) : entry =
+    ?= items ?|
+    | ChildEnd => End
+    | Child (is_dir, name, more) =>
+        := next = chain path rel more
+        ? is_dir = 1i32 ?>
+            := child_path = host_join path name
+            := child_rel = join_rel rel name
+            := nested = chain child_path child_rel (sort (listing child_path))
+            Folder (name, child_rel, nested, next)
+        |:
+            File (name, rel, file_system.rust_file_length (host_join path name), next)
+
+:= read_tree (dir : string) : root =
+    root (chain dir "" (sort (listing dir)))
+
+:= main () : i32 =
+    export "dtl_tree_html" ((\ dir => render (read_tree dir)) : string -> string)
+    export "dtl_tree_bytes" ((\ dir => bytes (read_tree dir)) : string -> i64)
+    export "dtl_size_label" ((\ n => size_label n) : i64 -> string)
+    0i32

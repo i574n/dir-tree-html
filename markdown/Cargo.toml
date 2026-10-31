@@ -1,0 +1,17 @@
+[package]
+name = "dtl_markdown"
+version = "0.0.1"
+edition = "2024"
+license-file = "../LICENSE"
+repository = "https://github.com/i574n/dir-tree-html"
+
+[package.metadata.spiral]
+entry = "markdown.spi"
+output = "markdown.rs"
+
+[lib]
+name = "dtl_markdown"
+path = "markdown.rs"
+
+[dependencies]
+dtl_inline = { path = "../inline" }
